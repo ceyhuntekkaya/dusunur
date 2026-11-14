@@ -44,7 +44,7 @@
   - `GET /api/health` uç noktasını yaz (204 döner)
 
   → 00 §3, §4.6, §16
-- [ ] **0-F01** Frontend iskeletini kur:
+- [x] **0-F01** Frontend iskeletini kur:
   - create-next-app, paketler ve shadcn bileşenleri
   - `globals.css` tema değişkenleri, Inter fontu
   - `next.config.ts` ve script'ler
