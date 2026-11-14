@@ -26,7 +26,7 @@
 | 1 | Çekirdek | 01-cekirdek | ✅ |
 | 2 | Akış | 02-akis | ✅ |
 | 3 | Fotokopi | 03-fotokopi | ✅ |
-| 4 | Mesajlaşma | 04-mesajlasma | ⬜ |
+| 4 | Mesajlaşma | 04-mesajlasma | ✅ |
 | 5 | Dokümanlar | 05-dokumanlar | ⬜ |
 | 6 | Takvim | 06-takvim | ⬜ |
 | 7 | Yayın hazırlığı | 07-yayin | ⬜ |
@@ -228,7 +228,7 @@
 ### Faz 4 kapanışı (sıralı, ana oturum)
 
 - [x] **4-B06** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 04 §10, 00 §14
-- [ ] **4-X01** Entegrasyon kontrolü (curl ile sohbet uçları, WS, lint, build) → 04 §6
+- [x] **4-X01** Entegrasyon kontrolü (curl ile sohbet uçları, WS, lint, build) → 04 §6
 
 ---
 
