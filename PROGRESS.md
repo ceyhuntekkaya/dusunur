@@ -25,7 +25,7 @@
 | 0 | Kurulum | 00-mimari | ✅ |
 | 1 | Çekirdek | 01-cekirdek | ✅ |
 | 2 | Akış | 02-akis | ✅ |
-| 3 | Fotokopi | 03-fotokopi | ⬜ |
+| 3 | Fotokopi | 03-fotokopi | ✅ |
 | 4 | Mesajlaşma | 04-mesajlasma | ⬜ |
 | 5 | Dokümanlar | 05-dokumanlar | ⬜ |
 | 6 | Takvim | 06-takvim | ⬜ |
@@ -204,7 +204,7 @@
 ### Faz 3 kapanışı (sıralı, ana oturum)
 
 - [x] **3-B06** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 03 §10, 00 §14
-- [ ] **3-X01** Entegrasyon kontrolü: db, mailpit, backend (dev), frontend; curl ile fotokopi uçlarını doğrula; `npm run lint && npm run build`; DTO uyumsuzluklarını düzelt → 03 §5
+- [x] **3-X01** Entegrasyon kontrolü: db, mailpit, backend (dev), frontend; curl ile fotokopi uçlarını doğrula; `npm run lint && npm run build`; DTO uyumsuzluklarını düzelt → 03 §5
 
 ---
 
