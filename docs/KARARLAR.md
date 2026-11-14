@@ -61,3 +61,9 @@ Bu dosya, kullanıcıyla birlikte alınan iş kararlarını tutar. Plan doküman
 | D-23 | Altyapı:<br>• Dosyalar sunucu diskinde tutulur (MinIO yok).<br>• Virüs taraması yoktur; dosya tipi ve boyut kontrolü yapılır.<br>• Oturum güvenli çerezle tutulur (JWT yok).<br>• WebSocket yalnızca sunucudan istemciye olay iletmek için kullanılır.<br>• Sistem geneli arama yoktur; her modül kendi içinde arama yapar.<br>• Denetim kaydı yalnızca kritik işlemler için tutulur.<br>• KVKK aydınlatma metni ilk girişte gösterilir. |
 | D-24 | Arayüz Türkçe, kod İngilizcedir. Plan, repoya konan Markdown dosyalarından oluşur. |
 | D-25 | Sistem Yöneticisi CSV dosyasıyla toplu personel ekleyebilir. Bu, ilk kurulum içindir ve kullanıcının onayı bekleniyor. |
+
+## Geliştirme ortamı
+
+| No | Karar |
+|---|---|
+| D-26 | Geliştirmede yeni bir PostgreSQL konteyneri açılmaz. Yerelde çalışan mevcut `postgres` konteyneri (5432) kullanılır; kullanıcı ve şifre `genixo`/`genixo`, veritabanı `iletisim`. `deploy/docker-compose.dev.yml` yalnızca `mailpit` içerir. Backend dev'de `POSTGRES_USER=genixo POSTGRES_PASSWORD=genixo` ortam değişkenleriyle çalışır. |

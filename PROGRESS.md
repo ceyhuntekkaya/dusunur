@@ -22,7 +22,7 @@
 
 | Faz | Kapsam | Plan | Durum |
 |---|---|---|---|
-| 0 | Kurulum | 00-mimari | ⬜ |
+| 0 | Kurulum | 00-mimari | ✅ |
 | 1 | Çekirdek | 01-cekirdek | ⬜ |
 | 2 | Akış | 02-akis (yazılacak) | ⬜ |
 | 3 | Fotokopi | 03-fotokopi (yazılacak) | ⬜ |
@@ -51,7 +51,7 @@
   - ESLint'te `no-img-element` kuralını kapat
 
   → 00 §3, §11.2, §12.1
-- [ ] **0-X02** Dağıtım dosyalarını yaz:
+- [x] **0-X02** Dağıtım dosyalarını yaz:
   - `deploy/docker-compose.dev.yml` (db ve mailpit)
   - `deploy/docker-compose.yml`, `deploy/nginx/default.conf`
   - `backend/Dockerfile`, `frontend/Dockerfile`
