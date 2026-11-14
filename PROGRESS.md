@@ -178,5 +178,5 @@
 
 ### Faz 2 kapanışı (sıralı, ana oturum)
 
-- [ ] **2-B05** Zorunlu testleri yaz (T-F1…T-F3) ve `./mvnw -q test` çalıştır → 02 §10, 00 §14
+- [x] **2-B05** Zorunlu testleri yaz (T-F1…T-F3) ve `./mvnw -q test` çalıştır → 02 §10, 00 §14
 - [ ] **2-X01** Entegrasyon kontrolü: db, mailpit, backend (dev), frontend; curl ile akış uçlarını doğrula; `npm run lint && npm run build`; DTO alan adı uyumsuzluklarını düzelt → 02 §6
