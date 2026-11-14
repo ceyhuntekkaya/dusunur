@@ -29,7 +29,7 @@
 | 4 | Mesajlaşma | 04-mesajlasma | ✅ |
 | 5 | Dokümanlar | 05-dokumanlar | ✅ |
 | 6 | Takvim | 06-takvim | ✅ |
-| 7 | Yayın hazırlığı | 07-yayin | ⬜ |
+| 7 | Yayın hazırlığı | 07-yayin | ⛔ manuel adımlar |
 
 ---
 
@@ -280,8 +280,8 @@
 
 ## Faz 7 — Yayın hazırlığı (sıralı, ana oturum)
 
-- [ ] **7-X01** Prod yapılandırma kontrolü → 07 §1
-- [ ] **7-X02** Güvenlik kontrol listesi → 07 §2
-- [ ] **7-X03** Yedekleme ve geri yükleme testi → 07 §3
-- [ ] **7-X04** Uçtan uca duman testi → 07 §4
-- [ ] **7-X05** `deploy/KURULUM.md` ve yıl devri prosedürü → 07 §5, §6
+- [x] **7-X01** Prod yapılandırma kontrolü → 07 §1
+- [x] **7-X02** Güvenlik kontrol listesi → 07 §2
+- ⛔ [ ] **7-X03** Yedekleme ve geri yükleme testi → 07 §3 — Prod ve ayrı test ortamı gerekir; kullanıcı yapacak
+- ⛔ [ ] **7-X04** Uçtan uca duman testi → 07 §4 — Gerçek tarayıcı ve telefonlarda manuel; `deploy/DUMAN-TESTI.md`
+- [x] **7-X05** `deploy/KURULUM.md` ve yıl devri prosedürü → 07 §5, §6

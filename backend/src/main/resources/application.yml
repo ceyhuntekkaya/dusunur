@@ -31,3 +31,5 @@ logging.level.tr.okul: DEBUG
 ---
 spring.config.activate.on-profile: prod
 server.servlet.session.cookie.secure: "${COOKIE_SECURE:true}"
+logging.level.root: INFO
+spring.jpa.show-sql: false
