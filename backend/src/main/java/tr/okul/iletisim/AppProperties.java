@@ -17,6 +17,7 @@ public record AppProperties(
 		Push push,
 		BootstrapAdmin bootstrapAdmin,
 		Print print,
+		Dms dms,
 		Cleanup cleanup) {
 
 	public record Storage(String root) {
@@ -39,6 +40,9 @@ public record AppProperties(
 	}
 
 	public record Print(int fileRetentionDays, int minLeadMinutes, int maxDaysAhead, int maxDelegationDays) {
+	}
+
+	public record Dms(int trashRetentionDays) {
 	}
 
 	public record Cleanup(int orphanFileHours, int notificationRetentionDays) {

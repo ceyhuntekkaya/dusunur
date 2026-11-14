@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-const PALETTE = [
+export const PALETTE = [
   ["#DBEAFE", "#1E40AF"],
   ["#DCFCE7", "#166534"],
   ["#FCE7F3", "#9D174D"],

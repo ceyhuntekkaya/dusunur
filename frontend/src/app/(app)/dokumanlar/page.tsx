@@ -1,7 +1,7 @@
 "use client";
 
-import { ComingSoon } from "@/components/common/ComingSoon";
+import { SpaceListView } from "@/features/dokumanlar/components/SpaceListView";
 
 export default function Page() {
-  return <ComingSoon title="Dokümanlar" />;
+  return <SpaceListView />;
 }

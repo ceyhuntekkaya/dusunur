@@ -238,15 +238,15 @@
 
 **Backend**
 
-- [ ] **5-B01** `V5__dms.sql` dosyasını yaz → 05 §3
-- [ ] **5-B02** `dms/` entity, repository, `DmsErrorCode`, DTO'lar → 05 §4, §6.1, §7
-- [ ] **5-B03** Yetki, alan, klasör/dosya, yükleme, çöp kutusu, taşıma, arama servisleri → 05 §2, §5
-- [ ] **5-B04** `DmsController`, bildirimler, `DmsDeactivationHook`, `DmsDevSeeder` → 05 §2.7, §2.8, §6.2, §6.3, §8
+- [x] **5-B01** `V5__dms.sql` dosyasını yaz → 05 §3
+- [x] **5-B02** `dms/` entity, repository, `DmsErrorCode`, DTO'lar → 05 §4, §6.1, §7
+- [x] **5-B03** Yetki, alan, klasör/dosya, yükleme, çöp kutusu, taşıma, arama servisleri → 05 §2, §5
+- [x] **5-B04** `DmsController`, bildirimler, `DmsDeactivationHook`, `DmsDevSeeder` → 05 §2.7, §2.8, §6.2, §6.3, §8
 
 **Frontend**
 
-- [ ] **5-F01** Alan listesi (`/dokumanlar`) ve Alan gezgini → 05 §9.1, §9.2
-- [ ] **5-F02** Yetkiler penceresi, Alan Ayarları, Çöp Kutusu, bağlantı rotası → 05 §9.3–9.6
+- [x] **5-F01** Alan listesi (`/dokumanlar`) ve Alan gezgini → 05 §9.1, §9.2
+- [x] **5-F02** Yetkiler penceresi, Alan Ayarları, Çöp Kutusu, bağlantı rotası → 05 §9.3–9.6
 
 ### Faz 5 kapanışı (sıralı, ana oturum)
 

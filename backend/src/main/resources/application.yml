@@ -23,6 +23,7 @@ app:
   push: { vapid-public-key: "${VAPID_PUBLIC_KEY:}", vapid-private-key: "${VAPID_PRIVATE_KEY:}", subject: "${VAPID_SUBJECT:mailto:admin@localhost}" }
   bootstrap-admin: { email: "${BOOTSTRAP_ADMIN_EMAIL:}", password: "${BOOTSTRAP_ADMIN_PASSWORD:}" }
   print: { file-retention-days: 30, min-lead-minutes: 60, max-days-ahead: 60, max-delegation-days: 90 }
+  dms: { trash-retention-days: 30 }
   cleanup: { orphan-file-hours: 24, notification-retention-days: 90 }
 ---
 spring.config.activate.on-profile: dev
