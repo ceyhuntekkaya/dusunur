@@ -27,7 +27,7 @@
 | 2 | Akış | 02-akis | ✅ |
 | 3 | Fotokopi | 03-fotokopi | ✅ |
 | 4 | Mesajlaşma | 04-mesajlasma | ✅ |
-| 5 | Dokümanlar | 05-dokumanlar | ⬜ |
+| 5 | Dokümanlar | 05-dokumanlar | ✅ |
 | 6 | Takvim | 06-takvim | ⬜ |
 | 7 | Yayın hazırlığı | 07-yayin | ⬜ |
 
@@ -251,7 +251,7 @@
 ### Faz 5 kapanışı (sıralı, ana oturum)
 
 - [x] **5-B05** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 05 §10, 00 §14
-- [ ] **5-X01** Entegrasyon kontrolü (curl ile doküman uçları, lint, build) → 05 §6
+- [x] **5-X01** Entegrasyon kontrolü (curl ile doküman uçları, lint, build) → 05 §6
 
 ---
 
