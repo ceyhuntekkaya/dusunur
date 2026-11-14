@@ -42,6 +42,7 @@ export function useCalendarVisibility(calendars: CalendarDto[] | undefined, myBr
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setStored(read());
     setLoaded(true);
   }, []);

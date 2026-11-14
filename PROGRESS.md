@@ -28,7 +28,7 @@
 | 3 | Fotokopi | 03-fotokopi | ✅ |
 | 4 | Mesajlaşma | 04-mesajlasma | ✅ |
 | 5 | Dokümanlar | 05-dokumanlar | ✅ |
-| 6 | Takvim | 06-takvim | ⬜ |
+| 6 | Takvim | 06-takvim | ✅ |
 | 7 | Yayın hazırlığı | 07-yayin | ⬜ |
 
 ---
@@ -274,7 +274,7 @@
 ### Faz 6 kapanışı (sıralı, ana oturum)
 
 - [x] **6-B05** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 06 §9, 00 §14
-- [ ] **6-X01** Entegrasyon kontrolü (curl ile takvim uçları, lint, build) → 06 §5
+- [x] **6-X01** Entegrasyon kontrolü (curl ile takvim uçları, lint, build) → 06 §5
 
 ---
 

@@ -115,7 +115,6 @@ public class CalendarDevSeeder implements ApplicationRunner {
 		}
 		UserContext mudur = ctx("mudur@okul.test", season);
 		UserContext ali = ctx("ogretmen1@okul.test", season);
-		UserContext elif = ctx("zumre.mat@okul.test", season);
 		bootstrap.ensureSystem();
 		bootstrap.ensure(ali);
 		long institution = idOf("SELECT id FROM cal_calendar WHERE type = 'INSTITUTION'");
@@ -123,6 +122,9 @@ public class CalendarDevSeeder implements ApplicationRunner {
 		long kuzey = idOf("SELECT c.id FROM cal_calendar c JOIN branch b ON b.id = c.branch_id WHERE b.name = 'Kuzey Kampüs'");
 		long aliDefault = idOf("SELECT c.id FROM cal_calendar c JOIN app_user u ON u.id = c.owner_id WHERE c.is_default AND u.email = 'ogretmen1@okul.test'");
 		long mathGroup = idOf("SELECT id FROM staff_group WHERE name = 'Matematik Zümresi'");
+		jdbc.sql("INSERT INTO staff_group_member (group_id, user_id) SELECT :g, id FROM app_user WHERE email = 'zumre.mat@okul.test' ON CONFLICT DO NOTHING")
+				.param("g", mathGroup).update();
+		UserContext elif = ctx("zumre.mat@okul.test", season);
 		long mathCalendar = idOf("SELECT id FROM cal_calendar WHERE type = 'GROUP' AND staff_group_id = " + mathGroup);
 		long merkezBranch = idOf("SELECT id FROM branch WHERE name = 'Merkez Kampüs'");
 		long kuzeyBranch = idOf("SELECT id FROM branch WHERE name = 'Kuzey Kampüs'");
