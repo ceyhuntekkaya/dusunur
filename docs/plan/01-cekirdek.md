@@ -719,12 +719,8 @@ type ImpactItem = { label: string; count: number };
 
 **`GET /api/admin/users/import-template`**
 
-- `personel-sablon.csv` dosyası indirilir: UTF-8 BOM, `;` ayraç.
-- İçerik:
-  ```
-  ad;soyad;eposta;telefon;brans;sube;unvan
-  Ayşe;Yılmaz;ayse.yilmaz@okul.k12.tr;05321234567;Matematik;Merkez Kampüs;Öğretmen
-  ```
+- `personel-sablon.csv` dosyası indirilir: UTF-8 BOM, `;` ayraç, CRLF satır sonu.
+- İçerik, repodaki `docs/personel-sablon.csv` dosyasıyla birebir aynıdır. Dosya `backend/src/main/resources/templates/personel-sablon.csv` konumuna kopyalanır ve oradan sunulur.
 
 **`POST /api/admin/users/import`** (multipart: `file`, `seasonId`)
 
@@ -1185,7 +1181,7 @@ Alanların altında canlı bir kontrol listesi bulunur:
 
 | Öğe | Yol | İkon | Rozet anahtarı |
 |---|---|---|---|
-| Akış | /akis | Newspaper | — |
+| Akış | /akis | Newspaper | `feedImportant` |
 | Mesajlar | /mesajlar | MessageCircle | `chat` |
 | Fotokopi | /fotokopi | Printer | `printApprovals` + `printQueue` |
 | Dokümanlar | /dokumanlar | FolderOpen | — |

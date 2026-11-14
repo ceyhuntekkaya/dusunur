@@ -25,11 +25,11 @@
 | 0 | Kurulum | 00-mimari | ✅ |
 | 1 | Çekirdek | 01-cekirdek | ✅ |
 | 2 | Akış | 02-akis | ✅ |
-| 3 | Fotokopi | 03-fotokopi (yazılacak) | ⬜ |
-| 4 | Mesajlaşma | 04-mesajlasma (yazılacak) | ⬜ |
-| 5 | Dokümanlar | 05-dokumanlar (yazılacak) | ⬜ |
-| 6 | Takvim | 06-takvim (yazılacak) | ⬜ |
-| 7 | Yayın hazırlığı | 07-yayin (yazılacak) | ⬜ |
+| 3 | Fotokopi | 03-fotokopi | ⬜ |
+| 4 | Mesajlaşma | 04-mesajlasma | ⬜ |
+| 5 | Dokümanlar | 05-dokumanlar | ⬜ |
+| 6 | Takvim | 06-takvim | ⬜ |
+| 7 | Yayın hazırlığı | 07-yayin | ⬜ |
 
 ---
 
@@ -180,3 +180,108 @@
 
 - [x] **2-B05** Zorunlu testleri yaz (T-F1…T-F3) ve `./mvnw -q test` çalıştır → 02 §10, 00 §14
 - [x] **2-X01** Entegrasyon kontrolü: db, mailpit, backend (dev), frontend; curl ile akış uçlarını doğrula; `npm run lint && npm run build`; DTO alan adı uyumsuzluklarını düzelt → 02 §6
+
+---
+
+## Faz 3 — Fotokopi
+
+### Dalga 3.1 [P]
+
+**Backend**
+
+- [ ] **3-B01** `V3__print.sql` dosyasını yaz → 03 §3
+- [ ] **3-B02** `print/` entity, repository, enum, `PrintErrorCode`, `PrintAuditAction`, DTO'lar → 03 §4, §5.1, §6
+- [ ] **3-B03** `PrintAccess`, `PrintRequestService` (onaylayıcı belirleme, durum makinesi), `PrintDelegationService`, `PrintPageCounter`, `PrintQueries` → 03 §2, §4
+- [ ] **3-B04** `PrintController` uç noktaları, doğrulama, bildirim ve canlı olaylar → 03 §5.2, §5.3, §2.9
+- [ ] **3-B05** `PrintSeasonHook`, `PrintDeactivationHook`, `PrintMembershipRemovalHook`, `PrintBadgeProvider`, `PrintJobs`, `PrintDevSeeder` → 03 §2.6–2.8, §8, §9
+
+**Frontend**
+
+- [ ] **3-F01** `/fotokopi` ana sayfa, `PrintRequestCard`, Taleplerim sekmesi, veri kancaları → 03 §7.1–7.3
+- [ ] **3-F02** Yeni talep (`/fotokopi/yeni`) ve talep detayı (`/fotokopi/[id]`) → 03 §7.4, §7.5
+- [ ] **3-F03** Onay Bekleyenler, Fotokopi Kuyruğu ve Rapor sekmeleri → 03 §7.6–7.8
+
+### Faz 3 kapanışı (sıralı, ana oturum)
+
+- [ ] **3-B06** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 03 §10, 00 §14
+- [ ] **3-X01** Entegrasyon kontrolü: db, mailpit, backend (dev), frontend; curl ile fotokopi uçlarını doğrula; `npm run lint && npm run build`; DTO uyumsuzluklarını düzelt → 03 §5
+
+---
+
+## Faz 4 — Mesajlaşma
+
+### Dalga 4.1 [P]
+
+**Backend**
+
+- [ ] **4-B01** `V4__chat.sql` dosyasını yaz → 04 §3
+- [ ] **4-B02** `chat/` entity, repository, `ChatErrorCode`, DTO'lar → 04 §4, §6.1, §7
+- [ ] **4-B03** Sohbet servisleri: türler, erişim, gönderme, silme, okundu/görüldü, sessize alma, sorgular → 04 §2, §5
+- [ ] **4-B04** `ChatController` uç noktaları, canlı olaylar, push, `ChatGroupSync` → 04 §2.8, §2.9, §6.2, §6.3
+- [ ] **4-B05** `ChatDevSeeder` → 04 §9
+
+**Frontend**
+
+- [ ] **4-F01** `/mesajlar` yerleşim ve sohbet listesi, Yeni Sohbet penceresi → 04 §8.1–8.3
+- [ ] **4-F02** Sohbet ekranı ve Sohbet Bilgisi paneli → 04 §8.4, §8.5
+
+### Faz 4 kapanışı (sıralı, ana oturum)
+
+- [ ] **4-B06** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 04 §10, 00 §14
+- [ ] **4-X01** Entegrasyon kontrolü (curl ile sohbet uçları, WS, lint, build) → 04 §6
+
+---
+
+## Faz 5 — Dokümanlar
+
+### Dalga 5.1 [P]
+
+**Backend**
+
+- [ ] **5-B01** `V5__dms.sql` dosyasını yaz → 05 §3
+- [ ] **5-B02** `dms/` entity, repository, `DmsErrorCode`, DTO'lar → 05 §4, §6.1, §7
+- [ ] **5-B03** Yetki, alan, klasör/dosya, yükleme, çöp kutusu, taşıma, arama servisleri → 05 §2, §5
+- [ ] **5-B04** `DmsController`, bildirimler, `DmsDeactivationHook`, `DmsDevSeeder` → 05 §2.7, §2.8, §6.2, §6.3, §8
+
+**Frontend**
+
+- [ ] **5-F01** Alan listesi (`/dokumanlar`) ve Alan gezgini → 05 §9.1, §9.2
+- [ ] **5-F02** Yetkiler penceresi, Alan Ayarları, Çöp Kutusu, bağlantı rotası → 05 §9.3–9.6
+
+### Faz 5 kapanışı (sıralı, ana oturum)
+
+- [ ] **5-B05** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 05 §10, 00 §14
+- [ ] **5-X01** Entegrasyon kontrolü (curl ile doküman uçları, lint, build) → 05 §6
+
+---
+
+## Faz 6 — Takvim
+
+### Dalga 6.1 [P]
+
+**Backend**
+
+- [ ] **6-B01** `V6__calendar.sql` dosyasını yaz → 06 §3
+- [ ] **6-B02** `calendar/` entity, repository, `CalendarErrorCode`, DTO'lar → 06 §4, §5.1, §6
+- [ ] **6-B03** `CalendarBootstrap`, kayıt, rezervasyon, paylaşım, bildirim servisleri → 06 §2
+- [ ] **6-B04** `CalendarController`, doğrulama, `CalendarDevSeeder` → 06 §5.2, §5.3, §8
+
+**Frontend**
+
+- [ ] **6-F01** Kütüphane ve Takvim sayfası (ay/hafta/gün/liste), takvim listesi → 06 §7.1–7.3
+- [ ] **6-F02** Kayıt Formu, Kayıt Detayı ve yönetim pencereleri → 06 §7.4–7.6
+
+### Faz 6 kapanışı (sıralı, ana oturum)
+
+- [ ] **6-B05** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 06 §9, 00 §14
+- [ ] **6-X01** Entegrasyon kontrolü (curl ile takvim uçları, lint, build) → 06 §5
+
+---
+
+## Faz 7 — Yayın hazırlığı (sıralı, ana oturum)
+
+- [ ] **7-X01** Prod yapılandırma kontrolü → 07 §1
+- [ ] **7-X02** Güvenlik kontrol listesi → 07 §2
+- [ ] **7-X03** Yedekleme ve geri yükleme testi → 07 §3
+- [ ] **7-X04** Uçtan uca duman testi → 07 §4
+- [ ] **7-X05** `deploy/KURULUM.md` ve yıl devri prosedürü → 07 §5, §6

@@ -476,6 +476,7 @@ Görseller ızgara olarak gösterilir. Her hücre `rounded-lg`, `object-cover`, 
 | 3 | Solda büyük, sağda alt alta iki küçük |
 | 4 ve üzeri | 2×2 ızgara; 4. hücrede koyu katman üzerinde "+{n}" |
 
+- **Ortak bileşenler:** Görsel ızgarası `components/common/AttachmentGrid`, görüntüleyici `components/common/ImageViewer` olarak yazılır; Mesajlaşma modülü de bunları kullanır. Prop olarak `src` üretici fonksiyon alırlar: `(fileId, download) => url`.
 - **Görsel görüntüleyici:** Bir görsele tıklanınca tam ekran bir pencere (`Dialog`) açılır.
   - Siyah arka plan, ortada görsel.
   - Sol/sağ oklar ve klavye ok tuşları ile gezinilir.
