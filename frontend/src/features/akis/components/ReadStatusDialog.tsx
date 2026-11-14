@@ -38,6 +38,7 @@ function Content({ postId }: { postId: number }) {
   const remind = useRemind(postId);
   const [tab, setTab] = useState<"unread" | "read">("unread");
   const [q, setQ] = useState("");
+  const [now] = useState(() => Date.now());
 
   if (status.isPending) return <ListSkeleton rows={4} />;
   if (status.isError) return <ErrorState error={status.error} onRetry={() => void status.refetch()} />;
@@ -46,7 +47,7 @@ function Content({ postId }: { postId: number }) {
   const total = read.length + unread.length;
   const needle = fold(q);
   const list = (tab === "unread" ? unread : read).filter((u) => !needle || fold(u.fullName).includes(needle));
-  const recent = !!lastReminderAt && Date.now() - new Date(lastReminderAt).getTime() < DAY_MS;
+  const recent = !!lastReminderAt && now - new Date(lastReminderAt).getTime() < DAY_MS;
 
   return (
     <div className="space-y-3">

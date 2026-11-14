@@ -24,7 +24,7 @@
 |---|---|---|---|
 | 0 | Kurulum | 00-mimari | ✅ |
 | 1 | Çekirdek | 01-cekirdek | ✅ |
-| 2 | Akış | 02-akis | ⬜ |
+| 2 | Akış | 02-akis | ✅ |
 | 3 | Fotokopi | 03-fotokopi (yazılacak) | ⬜ |
 | 4 | Mesajlaşma | 04-mesajlasma (yazılacak) | ⬜ |
 | 5 | Dokümanlar | 05-dokumanlar (yazılacak) | ⬜ |
@@ -179,4 +179,4 @@
 ### Faz 2 kapanışı (sıralı, ana oturum)
 
 - [x] **2-B05** Zorunlu testleri yaz (T-F1…T-F3) ve `./mvnw -q test` çalıştır → 02 §10, 00 §14
-- [ ] **2-X01** Entegrasyon kontrolü: db, mailpit, backend (dev), frontend; curl ile akış uçlarını doğrula; `npm run lint && npm run build`; DTO alan adı uyumsuzluklarını düzelt → 02 §6
+- [x] **2-X01** Entegrasyon kontrolü: db, mailpit, backend (dev), frontend; curl ile akış uçlarını doğrula; `npm run lint && npm run build`; DTO alan adı uyumsuzluklarını düzelt → 02 §6

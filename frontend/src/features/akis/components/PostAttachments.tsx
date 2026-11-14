@@ -61,7 +61,7 @@ function ImageViewer({
         <DialogTitle className="sr-only">{current?.name ?? "Görsel"}</DialogTitle>
         {current && (
           <div className="relative flex h-full w-full items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img src={fileUrl(postId, current.fileId)} alt={current.name} className="max-h-full max-w-full object-contain" />
             {n > 1 && (
               <>
@@ -127,7 +127,7 @@ function ImageGrid({
       onClick={() => onOpen(i)}
       className={cn("relative overflow-hidden rounded-lg bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring", className)}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
+      { }
       <img
         src={fileUrl(postId, img.fileId)}
         alt={img.name}
@@ -151,7 +151,7 @@ function ImageGrid({
         onClick={() => onOpen(0)}
         className="block w-full overflow-hidden rounded-lg bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+        { }
         <img
           src={fileUrl(postId, img.fileId)}
           alt={img.name}
