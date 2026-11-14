@@ -214,16 +214,16 @@
 
 **Backend**
 
-- [ ] **4-B01** `V4__chat.sql` dosyasını yaz → 04 §3
-- [ ] **4-B02** `chat/` entity, repository, `ChatErrorCode`, DTO'lar → 04 §4, §6.1, §7
-- [ ] **4-B03** Sohbet servisleri: türler, erişim, gönderme, silme, okundu/görüldü, sessize alma, sorgular → 04 §2, §5
-- [ ] **4-B04** `ChatController` uç noktaları, canlı olaylar, push, `ChatGroupSync` → 04 §2.8, §2.9, §6.2, §6.3
-- [ ] **4-B05** `ChatDevSeeder` → 04 §9
+- [x] **4-B01** `V4__chat.sql` dosyasını yaz → 04 §3
+- [x] **4-B02** `chat/` entity, repository, `ChatErrorCode`, DTO'lar → 04 §4, §6.1, §7
+- [x] **4-B03** Sohbet servisleri: türler, erişim, gönderme, silme, okundu/görüldü, sessize alma, sorgular → 04 §2, §5
+- [x] **4-B04** `ChatController` uç noktaları, canlı olaylar, push, `ChatGroupSync` → 04 §2.8, §2.9, §6.2, §6.3
+- [x] **4-B05** `ChatDevSeeder` → 04 §9
 
 **Frontend**
 
-- [ ] **4-F01** `/mesajlar` yerleşim ve sohbet listesi, Yeni Sohbet penceresi → 04 §8.1–8.3
-- [ ] **4-F02** Sohbet ekranı ve Sohbet Bilgisi paneli → 04 §8.4, §8.5
+- [x] **4-F01** `/mesajlar` yerleşim ve sohbet listesi, Yeni Sohbet penceresi → 04 §8.1–8.3
+- [x] **4-F02** Sohbet ekranı ve Sohbet Bilgisi paneli → 04 §8.4, §8.5
 
 ### Faz 4 kapanışı (sıralı, ana oturum)
 

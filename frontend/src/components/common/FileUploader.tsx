@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FileText, Loader2, Upload, X } from "lucide-react";
+import { FileText, Loader2, Paperclip, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { apiUpload, ApiError } from "@/lib/api";
@@ -18,6 +18,8 @@ type Props = {
   maxSizeMb?: number;
   compressImages?: boolean;
   maxFiles?: number;
+  maxFilesMessage?: string;
+  compact?: boolean;
   onUploadingChange?: (uploading: boolean) => void;
   onChange: (files: UploadedFileDto[]) => void;
   className?: string;
@@ -30,6 +32,7 @@ type Row = {
   progress: number;
   status: "uploading" | "done" | "error";
   error?: string;
+  preview?: string;
   result?: UploadedFileDto;
   abort: AbortController;
 };
@@ -55,6 +58,8 @@ export function FileUploader({
   maxSizeMb,
   compressImages = false,
   maxFiles,
+  maxFilesMessage,
+  compact = false,
   onUploadingChange,
   onChange,
   className,
@@ -92,6 +97,12 @@ export function FileUploader({
     onUploadingRef.current?.(uploading);
   }, [uploading]);
 
+  const previews = useRef(new Map<number, string>());
+  useEffect(() => {
+    const map = previews.current;
+    return () => map.forEach((u) => URL.revokeObjectURL(u));
+  }, []);
+
   function patch(key: number, change: Partial<Row>) {
     setRows((prev) => prev.map((r) => (r.key === key ? { ...r, ...change } : r)));
   }
@@ -121,9 +132,14 @@ export function FileUploader({
       toastError(problem);
       return;
     }
+    let preview: string | undefined;
+    if (compact && file.type.startsWith("image/")) {
+      preview = URL.createObjectURL(file);
+      previews.current.set(key, preview);
+    }
     setRows((prev) => [
       ...(multiple ? prev : []),
-      { key, name: file.name, size: file.size, progress: 0, status: "uploading", abort },
+      { key, name: file.name, size: file.size, progress: 0, status: "uploading", preview, abort },
     ]);
     try {
       const ext = extensionOf(file.name);
@@ -151,7 +167,7 @@ export function FileUploader({
     if (maxFiles !== undefined) {
       const room = Math.max(0, maxFiles - rows.filter((r) => r.status !== "error").length);
       if (files.length > room) {
-        toastError(`Bir paylaşıma en fazla ${maxFiles} dosya eklenebilir.`);
+        toastError(maxFilesMessage ?? `Bir paylaşıma en fazla ${maxFiles} dosya eklenebilir.`);
         files = files.slice(0, room);
       }
     }
@@ -161,7 +177,77 @@ export function FileUploader({
 
   function remove(row: Row) {
     row.abort.abort();
+    const url = previews.current.get(row.key);
+    if (url) {
+      URL.revokeObjectURL(url);
+      previews.current.delete(row.key);
+    }
     setRows((prev) => prev.filter((r) => r.key !== row.key));
+  }
+
+  if (compact) {
+    return (
+      <div className="contents">
+        {rows.length > 0 && (
+          <ul className="order-first flex w-full flex-wrap gap-2">
+            {rows.map((r) => (
+              <li
+                key={r.key}
+                className={cn(
+                  "relative overflow-hidden rounded-lg border bg-card",
+                  r.preview ? "size-16" : "flex h-10 max-w-48 items-center gap-2 pr-8 pl-2",
+                  r.status === "error" && "border-destructive",
+                )}
+                title={r.status === "error" ? r.error : r.name}
+              >
+                {r.preview ? (
+                   
+                  <img src={r.preview} alt={r.name} className="size-full object-cover" />
+                ) : (
+                  <>
+                    <FileText className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                    <span className="truncate text-xs">{r.name}</span>
+                  </>
+                )}
+                {r.status === "uploading" && (
+                  <Progress
+                    value={r.progress}
+                    className="absolute inset-x-0 bottom-0 gap-0"
+                    aria-label={`${r.name} yükleniyor`}
+                  />
+                )}
+                <button
+                  type="button"
+                  aria-label={`${r.name} dosyasını kaldır`}
+                  className="absolute top-0.5 right-0.5 flex size-6 items-center justify-center rounded-full bg-black/60 text-white outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  onClick={() => remove(r)}
+                >
+                  <X className="size-3.5" aria-hidden />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="size-11 shrink-0 rounded-full"
+          aria-label="Dosya ekle"
+          onClick={() => input.current?.click()}
+        >
+          <Paperclip className="size-5" aria-hidden />
+        </Button>
+        <input
+          ref={input}
+          type="file"
+          hidden
+          multiple={multiple}
+          accept={allowed.map((e) => `.${e}`).join(",")}
+          onChange={(e) => handleFiles(e.target.files)}
+        />
+      </div>
+    );
   }
 
   return (

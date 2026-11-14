@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Download, File, FileArchive, FileSpreadsheet, FileText, X } from "lucide-react";
+import { useState } from "react";
+import { Download, File, FileArchive, FileSpreadsheet, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { ImageViewer } from "@/components/common/ImageViewer";
 import { extensionOf } from "@/lib/files";
 import { formatFileSize } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -20,94 +20,6 @@ function FileIcon({ name }: { name: string }) {
   if (["pdf", "doc", "docx", "odt", "txt", "ppt", "pptx", "odp"].includes(ext))
     return <FileText className={cls} aria-hidden />;
   return <File className={cls} aria-hidden />;
-}
-
-function ImageViewer({
-  postId,
-  images,
-  index,
-  onIndexChange,
-  onClose,
-}: {
-  postId: number;
-  images: FeedAttachment[];
-  index: number | null;
-  onIndexChange: (i: number) => void;
-  onClose: () => void;
-}) {
-  const open = index !== null;
-  const n = images.length;
-
-  useEffect(() => {
-    if (index === null) return;
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "ArrowLeft") onIndexChange((index! - 1 + n) % n);
-      if (e.key === "ArrowRight") onIndexChange((index! + 1) % n);
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [index, n, onIndexChange]);
-
-  const current = index !== null ? images[index] : undefined;
-  const prev = () => onIndexChange((index! - 1 + n) % n);
-  const next = () => onIndexChange((index! + 1) % n);
-
-  return (
-    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent
-        showCloseButton={false}
-        className="top-0 left-0 h-dvh max-h-none w-screen max-w-none translate-x-0 translate-y-0 rounded-none bg-black p-0 text-white ring-0 sm:max-w-none"
-      >
-        <DialogTitle className="sr-only">{current?.name ?? "Görsel"}</DialogTitle>
-        {current && (
-          <div className="relative flex h-full w-full items-center justify-center">
-            { }
-            <img src={fileUrl(postId, current.fileId)} alt={current.name} className="max-h-full max-w-full object-contain" />
-            {n > 1 && (
-              <>
-                <button
-                  type="button"
-                  aria-label="Önceki görsel"
-                  className="absolute inset-y-0 left-0 flex w-1/3 items-center justify-start pl-2 outline-none md:w-20"
-                  onClick={prev}
-                >
-                  <ChevronLeft className="hidden size-8 rounded-full bg-black/50 md:block" aria-hidden />
-                </button>
-                <button
-                  type="button"
-                  aria-label="Sonraki görsel"
-                  className="absolute inset-y-0 right-0 flex w-1/3 items-center justify-end pr-2 outline-none md:w-20"
-                  onClick={next}
-                >
-                  <ChevronRight className="hidden size-8 rounded-full bg-black/50 md:block" aria-hidden />
-                </button>
-              </>
-            )}
-            <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 bg-gradient-to-b from-black/70 to-transparent p-3">
-              <span className="text-sm">
-                {index! + 1} / {n}
-              </span>
-              <div className="flex gap-2">
-                <Button
-                  variant="secondary"
-                  className="h-11 md:h-10"
-                  nativeButton={false}
-                  render={<a href={fileUrl(postId, current.fileId, true)} download />}
-                >
-                  <Download aria-hidden />
-                  İndir
-                </Button>
-                <Button variant="secondary" className="h-11 md:h-10" onClick={onClose}>
-                  <X aria-hidden />
-                  Kapat
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-      </DialogContent>
-    </Dialog>
-  );
 }
 
 function ImageGrid({
@@ -220,7 +132,7 @@ export function PostAttachments({ postId, attachments }: { postId: number; attac
         </div>
       ))}
       <ImageViewer
-        postId={postId}
+        fileUrl={(fileId, download) => fileUrl(postId, fileId, download)}
         images={images}
         index={viewer}
         onIndexChange={setViewer}
