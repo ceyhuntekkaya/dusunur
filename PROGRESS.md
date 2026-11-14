@@ -261,15 +261,15 @@
 
 **Backend**
 
-- [ ] **6-B01** `V6__calendar.sql` dosyasını yaz → 06 §3
-- [ ] **6-B02** `calendar/` entity, repository, `CalendarErrorCode`, DTO'lar → 06 §4, §5.1, §6
-- [ ] **6-B03** `CalendarBootstrap`, kayıt, rezervasyon, paylaşım, bildirim servisleri → 06 §2
-- [ ] **6-B04** `CalendarController`, doğrulama, `CalendarDevSeeder` → 06 §5.2, §5.3, §8
+- [x] **6-B01** `V6__calendar.sql` dosyasını yaz → 06 §3
+- [x] **6-B02** `calendar/` entity, repository, `CalendarErrorCode`, DTO'lar → 06 §4, §5.1, §6
+- [x] **6-B03** `CalendarBootstrap`, kayıt, rezervasyon, paylaşım, bildirim servisleri → 06 §2
+- [x] **6-B04** `CalendarController`, doğrulama, `CalendarDevSeeder` → 06 §5.2, §5.3, §8
 
 **Frontend**
 
-- [ ] **6-F01** Kütüphane ve Takvim sayfası (ay/hafta/gün/liste), takvim listesi → 06 §7.1–7.3
-- [ ] **6-F02** Kayıt Formu, Kayıt Detayı ve yönetim pencereleri → 06 §7.4–7.6
+- [x] **6-F01** Kütüphane ve Takvim sayfası (ay/hafta/gün/liste), takvim listesi → 06 §7.1–7.3
+- [x] **6-F02** Kayıt Formu, Kayıt Detayı ve yönetim pencereleri → 06 §7.4–7.6
 
 ### Faz 6 kapanışı (sıralı, ana oturum)
 
