@@ -17,6 +17,8 @@ type Props = {
   accept?: string[];
   maxSizeMb?: number;
   compressImages?: boolean;
+  maxFiles?: number;
+  onUploadingChange?: (uploading: boolean) => void;
   onChange: (files: UploadedFileDto[]) => void;
   className?: string;
 };
@@ -52,6 +54,8 @@ export function FileUploader({
   accept,
   maxSizeMb,
   compressImages = false,
+  maxFiles,
+  onUploadingChange,
   onChange,
   className,
 }: Props) {
@@ -78,6 +82,15 @@ export function FileUploader({
     onChangeRef.current(rows.flatMap((r) => (r.status === "done" && r.result ? [r.result] : [])));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [doneKey]);
+
+  const uploading = rows.some((r) => r.status === "uploading");
+  const onUploadingRef = useRef(onUploadingChange);
+  useEffect(() => {
+    onUploadingRef.current = onUploadingChange;
+  });
+  useEffect(() => {
+    onUploadingRef.current?.(uploading);
+  }, [uploading]);
 
   function patch(key: number, change: Partial<Row>) {
     setRows((prev) => prev.map((r) => (r.key === key ? { ...r, ...change } : r)));
@@ -134,7 +147,14 @@ export function FileUploader({
 
   function handleFiles(list: FileList | null) {
     if (!list) return;
-    const files = Array.from(list);
+    let files = Array.from(list);
+    if (maxFiles !== undefined) {
+      const room = Math.max(0, maxFiles - rows.filter((r) => r.status !== "error").length);
+      if (files.length > room) {
+        toastError(`Bir paylaşıma en fazla ${maxFiles} dosya eklenebilir.`);
+        files = files.slice(0, room);
+      }
+    }
     (multiple ? files : files.slice(0, 1)).forEach((f) => void upload(f));
     if (input.current) input.current.value = "";
   }

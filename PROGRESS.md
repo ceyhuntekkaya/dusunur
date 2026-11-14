@@ -24,7 +24,7 @@
 |---|---|---|---|
 | 0 | Kurulum | 00-mimari | ✅ |
 | 1 | Çekirdek | 01-cekirdek | ✅ |
-| 2 | Akış | 02-akis (yazılacak) | ⬜ |
+| 2 | Akış | 02-akis | ⬜ |
 | 3 | Fotokopi | 03-fotokopi (yazılacak) | ⬜ |
 | 4 | Mesajlaşma | 04-mesajlasma (yazılacak) | ⬜ |
 | 5 | Dokümanlar | 05-dokumanlar (yazılacak) | ⬜ |
@@ -157,3 +157,26 @@
   4. DTO alan adı uyumsuzluklarını düzelt.
 
   → 01 §6
+
+---
+
+## Faz 2 — Akış
+
+### Dalga 2.1 [P]
+
+**Backend**
+
+- [x] **2-B01** `V2__feed.sql` dosyasını yaz → 02 §3
+- [x] **2-B02** `feed/` entity, repository, `FeedErrorCode`, DTO'lar ve `FeedVisibility` sorgu parçasını yaz → 02 §4, §5, §6.1, §7
+- [x] **2-B03** Akış servisleri ve API'sini yaz: liste, detay, paylaşım, düzenleme, silme, sabitleme, beğeni, yorum, okundu, okuma durumu, hatırlatma; bildirim, canlı olay ve rozet entegrasyonu → 02 §2, §5.2, §5.3, §6.2, §6.3
+- [x] **2-B04** `FeedDevSeeder` sınıfını ve `dev/` örnek dosyalarını yaz → 02 §9
+
+**Frontend**
+
+- [x] **2-F01** Akış sayfası (`/akis`), `PostCard` ve akış veri kancalarını yaz → 02 §8.1, §8.2
+- [x] **2-F02** Paylaşım penceresi (`Composer`), gönderi detayı (`/akis/[id]`) ve Okuma Durumu penceresini yaz → 02 §8.3, §8.4, §8.5
+
+### Faz 2 kapanışı (sıralı, ana oturum)
+
+- [ ] **2-B05** Zorunlu testleri yaz (T-F1…T-F3) ve `./mvnw -q test` çalıştır → 02 §10, 00 §14
+- [ ] **2-X01** Entegrasyon kontrolü: db, mailpit, backend (dev), frontend; curl ile akış uçlarını doğrula; `npm run lint && npm run build`; DTO alan adı uyumsuzluklarını düzelt → 02 §6
