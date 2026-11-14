@@ -250,7 +250,7 @@
 
 ### Faz 5 kapanışı (sıralı, ana oturum)
 
-- [ ] **5-B05** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 05 §10, 00 §14
+- [x] **5-B05** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 05 §10, 00 §14
 - [ ] **5-X01** Entegrasyon kontrolü (curl ile doküman uçları, lint, build) → 05 §6
 
 ---
