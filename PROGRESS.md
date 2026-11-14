@@ -67,11 +67,11 @@
 
 **Backend**
 
-- [ ] **1-B01** `V1__core.sql` dosyasını yaz; Spring Session şemasını ekle → 01 §3
-- [ ] **1-B02** `common/error` paketini yaz: `ApiError`, `ErrorCode`, `CommonErrorCode`, `BusinessException`, `Messages`, `GlobalExceptionHandler`, `ErrorResponseWriter` ve `TraceIdFilter` → 00 §6.1–6.3
-- [ ] **1-B03** Ortak yardımcıları yaz: `common/util` (`TextNormalizer`, `PhoneNormalizer`, `Csv`), `PageResponse`, `CursorResponse` → 00 §5, §7
-- [ ] **1-B04** Çekirdek entity ve repository'leri yaz: `Branch`, `AppUser`, `Season`, `SeasonMembership`, `StaffGroup`, `StaffGroupMember`, `AuthToken` → 01 §4
-- [ ] **1-B05** Güvenliği yaz:
+- [x] **1-B01** `V1__core.sql` dosyasını yaz; Spring Session şemasını ekle → 01 §3
+- [x] **1-B02** `common/error` paketini yaz: `ApiError`, `ErrorCode`, `CommonErrorCode`, `BusinessException`, `Messages`, `GlobalExceptionHandler`, `ErrorResponseWriter` ve `TraceIdFilter` → 00 §6.1–6.3
+- [x] **1-B03** Ortak yardımcıları yaz: `common/util` (`TextNormalizer`, `PhoneNormalizer`, `Csv`), `PageResponse`, `CursorResponse` → 00 §5, §7
+- [x] **1-B04** Çekirdek entity ve repository'leri yaz: `Branch`, `AppUser`, `Season`, `SeasonMembership`, `StaffGroup`, `StaffGroupMember`, `AuthToken` → 01 §4
+- [x] **1-B05** Güvenliği yaz:
   - `SecurityConfig` (session, CSRF spa, entry point, access denied)
   - `UserContext`, `UserContextFilter`, `UserContextArgumentResolver`
   - `AdminPathInterceptor`, `SessionService`
@@ -80,10 +80,10 @@
 
 **Frontend**
 
-- [ ] **1-F01** `lib` dosyalarını yaz: `api.ts`, `query-client.ts`, `form.ts` (`useApiForm`), `validation.ts`, `text.ts`, `format.ts`, `me.ts` (`useMe`) ve kök `Providers` + `Toaster` → 00 §6.4, §7, §11.3
-- [ ] **1-F02** Ortak bileşenleri yaz: `PageHeader`, `EmptyState`, `ErrorState`, `PageSkeleton`/`ListSkeleton`, `ConfirmDialog`, `ResponsiveDialog`, `UserAvatar`, `DateText`, `DataTable`, `StatusBadge`, `ArchiveBanner`, `InfiniteList` → 00 §11.4
-- [ ] **1-F03** Kimlik sayfalarını yaz: `(auth)/layout`, `/giris`, `/sifremi-unuttum`, `/sifre-belirle` → 01 §6.1, §10 S-1, S-2, S-3
-- [ ] **1-F04** AppShell'i yaz:
+- [x] **1-F01** `lib` dosyalarını yaz: `api.ts`, `query-client.ts`, `form.ts` (`useApiForm`), `validation.ts`, `text.ts`, `format.ts`, `me.ts` (`useMe`) ve kök `Providers` + `Toaster` → 00 §6.4, §7, §11.3
+- [x] **1-F02** Ortak bileşenleri yaz: `PageHeader`, `EmptyState`, `ErrorState`, `PageSkeleton`/`ListSkeleton`, `ConfirmDialog`, `ResponsiveDialog`, `UserAvatar`, `DateText`, `DataTable`, `StatusBadge`, `ArchiveBanner`, `InfiniteList` → 00 §11.4
+- [x] **1-F03** Kimlik sayfalarını yaz: `(auth)/layout`, `/giris`, `/sifremi-unuttum`, `/sifre-belirle` → 01 §6.1, §10 S-1, S-2, S-3
+- [x] **1-F04** AppShell'i yaz:
   - Sidebar, BottomNav, TopBar, `nav-items.ts`
   - Oturum koruması, Suspense sarmalayıcı, KVKK penceresi
   - `/` yönlendirmesi
