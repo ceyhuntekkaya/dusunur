@@ -227,7 +227,7 @@
 
 ### Faz 4 kapanışı (sıralı, ana oturum)
 
-- [ ] **4-B06** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 04 §10, 00 §14
+- [x] **4-B06** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 04 §10, 00 §14
 - [ ] **4-X01** Entegrasyon kontrolü (curl ile sohbet uçları, WS, lint, build) → 04 §6
 
 ---
