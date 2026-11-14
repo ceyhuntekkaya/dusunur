@@ -23,7 +23,7 @@
 | Faz | Kapsam | Plan | Durum |
 |---|---|---|---|
 | 0 | Kurulum | 00-mimari | ✅ |
-| 1 | Çekirdek | 01-cekirdek | ⬜ |
+| 1 | Çekirdek | 01-cekirdek | ✅ |
 | 2 | Akış | 02-akis (yazılacak) | ⬜ |
 | 3 | Fotokopi | 03-fotokopi (yazılacak) | ⬜ |
 | 4 | Mesajlaşma | 04-mesajlasma (yazılacak) | ⬜ |
@@ -150,7 +150,7 @@
 ### Faz 1 kapanışı (sıralı, ana oturum)
 
 - [x] **1-B16** Zorunlu testleri yaz (T-C1…T-C6) ve `./mvnw -q test` çalıştır → 01 §11, 00 §14
-- [ ] **1-X01** Entegrasyon kontrolü:
+- [x] **1-X01** Entegrasyon kontrolü:
   1. db, mailpit, backend (dev) ve frontend'i çalıştır.
   2. Şu akışı curl ile doğrula: `csrf → login (mudur@okul.test) → me → directory/search → notifications`.
   3. `npm run lint && npm run build` çalıştır.

@@ -23,8 +23,9 @@ const ICONS: [string, LucideIcon][] = [
   ["CALENDAR_", CalendarDays],
 ];
 
-function iconFor(type: string): LucideIcon {
-  return ICONS.find(([prefix]) => type.startsWith(prefix))?.[1] ?? Bell;
+function NotificationIcon({ type }: { type: string }) {
+  const Icon = ICONS.find(([prefix]) => type.startsWith(prefix))?.[1] ?? Bell;
+  return <Icon className="size-4" aria-hidden />;
 }
 
 export function NotificationItem({
@@ -36,7 +37,6 @@ export function NotificationItem({
 }) {
   const router = useRouter();
   const markRead = useMarkNotificationRead();
-  const Icon = iconFor(notification.type);
 
   function open() {
     if (!notification.read) markRead.mutate(notification.id);
@@ -51,7 +51,7 @@ export function NotificationItem({
       className="flex min-h-14 w-full items-start gap-3 rounded-lg border bg-card p-3 text-left outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
-        <Icon className="size-4" aria-hidden />
+        <NotificationIcon type={notification.type} />
       </span>
       <span className="min-w-0 flex-1">
         <span className="flex items-start gap-2">

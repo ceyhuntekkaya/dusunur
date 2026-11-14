@@ -92,8 +92,14 @@ export function usePush() {
   }, []);
 
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    let cancelled = false;
+    void resolveStatus().then((s) => {
+      if (!cancelled) setStatus(s);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const enable = useCallback(async () => {
     setStatus(await enablePush());
