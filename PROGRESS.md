@@ -203,7 +203,7 @@
 
 ### Faz 3 kapanışı (sıralı, ana oturum)
 
-- [ ] **3-B06** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 03 §10, 00 §14
+- [x] **3-B06** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 03 §10, 00 §14
 - [ ] **3-X01** Entegrasyon kontrolü: db, mailpit, backend (dev), frontend; curl ile fotokopi uçlarını doğrula; `npm run lint && npm run build`; DTO uyumsuzluklarını düzelt → 03 §5
 
 ---
