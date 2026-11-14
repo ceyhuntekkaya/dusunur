@@ -1,0 +1,9 @@
+backend/target/
+frontend/.next/
+node_modules/
+.env
+deploy/.env
+data/
+.DS_Store
+.claude/settings.local.json
+docs/*.zip
