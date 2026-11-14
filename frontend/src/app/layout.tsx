@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Okul İletişim",
   description: "Okul iç iletişim sistemi",
   appleWebApp: { capable: true, title: "İletişim", statusBarStyle: "default" },
+  icons: { apple: "/icons/apple-touch-icon.png" },
 };
 
 export const viewport: Viewport = {

@@ -69,6 +69,54 @@ function isApiErrorBody(body: unknown): body is {
   );
 }
 
+async function parseError(status: number, text: string): Promise<ApiError> {
+  let body: unknown;
+  try {
+    body = text ? JSON.parse(text) : undefined;
+  } catch {
+    body = undefined;
+  }
+  if (isApiErrorBody(body)) {
+    return new ApiError(status, body.code, body.message, body.fieldErrors ?? [], body.details ?? [], body.traceId);
+  }
+  return new ApiError(status, "HTTP_ERROR", fallbackMessage(status));
+}
+
+export async function apiUpload<T>(
+  path: string,
+  form: FormData,
+  opts: { onProgress?: (percent: number) => void; signal?: AbortSignal } = {},
+): Promise<T> {
+  const token = await ensureCsrfToken();
+  return new Promise<T>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", path);
+    xhr.withCredentials = true;
+    if (token) xhr.setRequestHeader("X-XSRF-TOKEN", token);
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) opts.onProgress?.(Math.round((e.loaded / e.total) * 100));
+    };
+    xhr.onerror = () =>
+      reject(
+        new ApiError(
+          0,
+          "NETWORK_ERROR",
+          "Sunucuya ulaşılamıyor. İnternet bağlantınızı kontrol edip tekrar deneyin.",
+        ),
+      );
+    xhr.onabort = () => reject(new DOMException("Aborted", "AbortError"));
+    xhr.onload = async () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve((xhr.responseText ? JSON.parse(xhr.responseText) : undefined) as T);
+      } else {
+        reject(await parseError(xhr.status, xhr.responseText));
+      }
+    };
+    opts.signal?.addEventListener("abort", () => xhr.abort());
+    xhr.send(form);
+  });
+}
+
 export async function api<T>(
   path: string,
   init: Omit<RequestInit, "body"> & { json?: unknown; body?: BodyInit | null } = {},

@@ -1,10 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { disablePushQuietly } from "@/lib/push";
 import type {
   BadgeMap,
+  ChangePasswordRequest,
+  DirectorySearchResponse,
   KvkkResponse,
   LoginRequest,
   MeResponse,
@@ -67,7 +70,7 @@ export function useAcceptKvkk() {
 
 export function useBadges(enabled: boolean) {
   return useQuery({
-    queryKey: ["core", "badges"],
+    queryKey: ["me", "badges"],
     queryFn: () => api<BadgeMap>("/api/me/badges"),
     enabled,
     refetchInterval: 60_000,
@@ -81,12 +84,65 @@ export function useSignOut() {
   const logout = useLogout();
   return {
     pending: logout.isPending,
-    signOut: () =>
+    signOut: async () => {
+      await disablePushQuietly();
       logout.mutate(undefined, {
         onSuccess: () => {
           queryClient.clear();
           router.replace("/giris");
         },
-      }),
+      });
+    },
   };
+}
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: (body: ChangePasswordRequest) =>
+      api<void>("/api/auth/change-password", { method: "POST", json: body }),
+  });
+}
+
+function useRefreshNotifications() {
+  const queryClient = useQueryClient();
+  return () => {
+    void queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    void queryClient.invalidateQueries({ queryKey: ["me", "badges"] });
+  };
+}
+
+export function useMarkNotificationRead() {
+  const refresh = useRefreshNotifications();
+  return useMutation({
+    mutationFn: (id: number) => api<void>(`/api/notifications/${id}/read`, { method: "POST" }),
+    onSuccess: refresh,
+    meta: { silentError: true },
+  });
+}
+
+export function useMarkAllNotificationsRead() {
+  const refresh = useRefreshNotifications();
+  return useMutation({
+    mutationFn: () => api<void>("/api/notifications/read-all", { method: "POST" }),
+    onSuccess: refresh,
+  });
+}
+
+export function useDirectorySearch(params: {
+  q: string;
+  kinds: ("user" | "group" | "branch")[];
+  groupScope?: "mine" | "all";
+  enabled?: boolean;
+}) {
+  const { q, kinds, groupScope = "mine", enabled = true } = params;
+  return useQuery({
+    queryKey: ["core", "directory", { q, kinds, groupScope }],
+    queryFn: () => {
+      const qs = new URLSearchParams({ q, kinds: kinds.join(","), groupScope, limit: "20" });
+      return api<DirectorySearchResponse>(`/api/directory/search?${qs.toString()}`);
+    },
+    enabled: enabled && kinds.length > 0,
+    placeholderData: keepPreviousData,
+    staleTime: 10_000,
+  });
 }

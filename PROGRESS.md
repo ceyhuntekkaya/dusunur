@@ -95,34 +95,34 @@
 
 **Backend**
 
-- [ ] **1-B06** `common/audit` paketini yaz: `AuditService`, `AuditAction`, `CoreAuditAction` ve admin audit API'si → 01 §6.10
-- [ ] **1-B07** `common/file` paketini yaz: `StoredFile`, `FileStorageService` (`store`, `attach`, `serve`, `delete`) ve `POST /api/files` → 00 §9
-- [ ] **1-B08** `common/notify` paketini yaz:
+- [x] **1-B06** `common/audit` paketini yaz: `AuditService`, `AuditAction`, `CoreAuditAction` ve admin audit API'si → 01 §6.10
+- [x] **1-B07** `common/file` paketini yaz: `StoredFile`, `FileStorageService` (`store`, `attach`, `serve`, `delete`) ve `POST /api/files` → 00 §9
+- [x] **1-B08** `common/notify` paketini yaz:
   - `WebSocketConfig` ve kanal interceptor'ı
   - `RealtimePublisher`, `NotificationService`, `WebPushSender`
   - Push abonelik API'si, bildirim API'si
   - `BadgeProvider` arayüzü, `/api/me/badges`
 
   → 00 §10, 01 §6.2, §6.3, §8
-- [ ] **1-B09** `common/mail/MailService` ve kimlik API'sini yaz:
+- [x] **1-B09** `common/mail/MailService` ve kimlik API'sini yaz:
   - login, logout, me, csrf, kvkk
   - change-password, forgot-password, password-token
   - `LoginAttemptService`, `BootstrapAdminRunner`
 
   → 01 §2.2, §6.1, §9
-- [ ] **1-B10** Şube API'sini ve `core/spi` arayüzlerini yaz (hook ve event tanımları) → 01 §6.5, §8
+- [x] **1-B10** Şube API'sini ve `core/spi` arayüzlerini yaz (hook ve event tanımları) → 01 §6.5, §8
 
 **Frontend**
 
-- [ ] **1-F05** Ortak seçicileri yaz: `UserPicker`, `TargetPicker`, `FileUploader` (XHR ilerleme, sıkıştırma) → 00 §9, §11.4, 01 §6.4
-- [ ] **1-F06** WebSocket ve push katmanını yaz:
+- [x] **1-F05** Ortak seçicileri yaz: `UserPicker`, `TargetPicker`, `FileUploader` (XHR ilerleme, sıkıştırma) → 00 §9, §11.4, 01 §6.4
+- [x] **1-F06** WebSocket ve push katmanını yaz:
   - `lib/ws.ts`: STOMP istemcisi, olay dağıtıcısı, bağlantı şeridi
   - `lib/push.ts`, `public/sw.js`, `app/manifest.ts`, ikonlar
   - Ana ekrana ekleme kartı, bildirimleri aç kartı
 
   → 00 §10, §13
-- [ ] **1-F07** Bildirim arayüzünü yaz: zil, Popover, `/bildirimler`, `useBadges` ve rozetler → 01 §6.3, §10 S-5
-- [ ] **1-F08** Profil sayfasını yaz (`/profil`) → 01 §10 S-6
+- [x] **1-F07** Bildirim arayüzünü yaz: zil, Popover, `/bildirimler`, `useBadges` ve rozetler → 01 §6.3, §10 S-5
+- [x] **1-F08** Profil sayfasını yaz (`/profil`) → 01 §10 S-6
 
 ### Dalga 1.3 [P]
 

@@ -42,3 +42,37 @@ export type PasswordTokenInfo = {
 };
 
 export type BadgeMap = Record<string, number>;
+
+export type NotificationDto = {
+  id: number;
+  type: string;
+  title: string;
+  body?: string;
+  link?: string;
+  createdAt: string;
+  read: boolean;
+};
+
+export type DirUser = {
+  id: number;
+  fullName: string;
+  title?: string;
+  branchName?: string;
+  discipline?: string;
+};
+export type DirGroup = { id: number; name: string; memberCount: number };
+export type DirBranch = { id: number; name: string };
+export type DirectorySearchResponse = { users: DirUser[]; groups: DirGroup[]; branches: DirBranch[] };
+
+export type TargetType = "USER" | "GROUP" | "BRANCH" | "ALL";
+export type TargetRef = { type: TargetType; id?: number };
+export type TargetView = TargetRef & { name: string };
+
+export type FilePurpose = "FEED" | "CHAT" | "PRINT" | "DMS" | "CALENDAR";
+export type UploadedFileDto = { id: string; originalName: string; contentType: string; sizeBytes: number };
+
+export type WsEnvelope = { type: string; payload: unknown };
+
+export type PushSubscriptionRequest = { endpoint: string; keys: { p256dh: string; auth: string } };
+
+export type ChangePasswordRequest = { currentPassword: string; newPassword: string };
