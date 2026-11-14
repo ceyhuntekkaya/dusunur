@@ -189,17 +189,17 @@
 
 **Backend**
 
-- [ ] **3-B01** `V3__print.sql` dosyasını yaz → 03 §3
-- [ ] **3-B02** `print/` entity, repository, enum, `PrintErrorCode`, `PrintAuditAction`, DTO'lar → 03 §4, §5.1, §6
-- [ ] **3-B03** `PrintAccess`, `PrintRequestService` (onaylayıcı belirleme, durum makinesi), `PrintDelegationService`, `PrintPageCounter`, `PrintQueries` → 03 §2, §4
-- [ ] **3-B04** `PrintController` uç noktaları, doğrulama, bildirim ve canlı olaylar → 03 §5.2, §5.3, §2.9
-- [ ] **3-B05** `PrintSeasonHook`, `PrintDeactivationHook`, `PrintMembershipRemovalHook`, `PrintBadgeProvider`, `PrintJobs`, `PrintDevSeeder` → 03 §2.6–2.8, §8, §9
+- [x] **3-B01** `V3__print.sql` dosyasını yaz → 03 §3
+- [x] **3-B02** `print/` entity, repository, enum, `PrintErrorCode`, `PrintAuditAction`, DTO'lar → 03 §4, §5.1, §6
+- [x] **3-B03** `PrintAccess`, `PrintRequestService` (onaylayıcı belirleme, durum makinesi), `PrintDelegationService`, `PrintPageCounter`, `PrintQueries` → 03 §2, §4
+- [x] **3-B04** `PrintController` uç noktaları, doğrulama, bildirim ve canlı olaylar → 03 §5.2, §5.3, §2.9
+- [x] **3-B05** `PrintSeasonHook`, `PrintDeactivationHook`, `PrintMembershipRemovalHook`, `PrintBadgeProvider`, `PrintJobs`, `PrintDevSeeder` → 03 §2.6–2.8, §8, §9
 
 **Frontend**
 
-- [ ] **3-F01** `/fotokopi` ana sayfa, `PrintRequestCard`, Taleplerim sekmesi, veri kancaları → 03 §7.1–7.3
-- [ ] **3-F02** Yeni talep (`/fotokopi/yeni`) ve talep detayı (`/fotokopi/[id]`) → 03 §7.4, §7.5
-- [ ] **3-F03** Onay Bekleyenler, Fotokopi Kuyruğu ve Rapor sekmeleri → 03 §7.6–7.8
+- [x] **3-F01** `/fotokopi` ana sayfa, `PrintRequestCard`, Taleplerim sekmesi, veri kancaları → 03 §7.1–7.3
+- [x] **3-F02** Yeni talep (`/fotokopi/yeni`) ve talep detayı (`/fotokopi/[id]`) → 03 §7.4, §7.5
+- [x] **3-F03** Onay Bekleyenler, Fotokopi Kuyruğu ve Rapor sekmeleri → 03 §7.6–7.8
 
 ### Faz 3 kapanışı (sıralı, ana oturum)
 
