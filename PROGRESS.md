@@ -149,7 +149,7 @@
 
 ### Faz 1 kapanışı (sıralı, ana oturum)
 
-- [ ] **1-B16** Zorunlu testleri yaz (T-C1…T-C6) ve `./mvnw -q test` çalıştır → 01 §11, 00 §14
+- [x] **1-B16** Zorunlu testleri yaz (T-C1…T-C6) ve `./mvnw -q test` çalıştır → 01 §11, 00 §14
 - [ ] **1-X01** Entegrasyon kontrolü:
   1. db, mailpit, backend (dev) ve frontend'i çalıştır.
   2. Şu akışı curl ile doğrula: `csrf → login (mudur@okul.test) → me → directory/search → notifications`.
