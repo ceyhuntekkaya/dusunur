@@ -69,3 +69,4 @@ Bu dosya, kullanıcıyla birlikte alınan iş kararlarını tutar. Plan doküman
 | D-26 | Geliştirmede yeni bir PostgreSQL konteyneri açılmaz. Yerelde çalışan mevcut `postgres` konteyneri (5432) kullanılır; kullanıcı ve şifre `genixo`/`genixo`, veritabanı `iletisim`. `deploy/docker-compose.dev.yml` yalnızca `mailpit` içerir. Backend dev'de `POSTGRES_USER=genixo POSTGRES_PASSWORD=genixo` ortam değişkenleriyle çalışır. |
 | D-62 | Fotokopi vekâlet süresi sınırı `application.yml` içinde `app.print.max-delegation-days` ayarıdır (varsayılan 90). Süre, başlangıç ve bitiş günü dahil gün sayısıdır. |
 | D-63 | Talep sahibi pasifleştirilince devralan kişi talep sahibinin kendisi çıkıp talep otomatik onaylanırsa `approver_id` NULL kalır (§2.2 ile tutarlı). |
+| D-64 | Takvim açıklaması en fazla 500 karakterdir; aşılırsa mesaj "Açıklama en fazla 500 karakter olabilir." olur (06 §5.3 tablosuna eklenmemiş, kodda bu metinle durur). |

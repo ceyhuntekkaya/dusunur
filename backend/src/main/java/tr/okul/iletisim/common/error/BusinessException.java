@@ -23,8 +23,19 @@ public class BusinessException extends RuntimeException {
 		return new BusinessException(code, field, List.of(), args);
 	}
 
+	public static BusinessException fieldMessage(ErrorCode code, String field, String fieldMessage) {
+		return new BusinessException(code, field, fieldMessage);
+	}
+
 	public static BusinessException details(ErrorCode code, List<String> details, Object[] args) {
 		return new BusinessException(code, null, details, args);
+	}
+
+	private BusinessException(ErrorCode code, String field, String fieldMessage) {
+		super(Messages.format(code.message(), new Object[0]));
+		this.code = code;
+		this.fieldErrors = List.of(new ApiError.FieldError(field, fieldMessage));
+		this.details = List.of();
 	}
 
 	public ErrorCode getCode() {

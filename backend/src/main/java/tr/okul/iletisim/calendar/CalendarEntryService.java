@@ -249,7 +249,8 @@ public class CalendarEntryService {
 		OffsetDateTime end;
 		if (in.allDay()) {
 			if (in.startDate() == null || in.endDate() == null) {
-				throw BusinessException.field(CommonErrorCode.VALIDATION_FAILED, "startDate");
+				throw BusinessException.fieldMessage(CommonErrorCode.VALIDATION_FAILED, "startDate",
+						"Başlangıç ve bitiş tarihini seçin.");
 			}
 			if (in.endDate().isBefore(in.startDate())) {
 				throw new BusinessException(CalendarErrorCode.CAL_END_BEFORE_START);
@@ -259,7 +260,8 @@ public class CalendarEntryService {
 		}
 		else {
 			if (in.startAt() == null || in.endAt() == null) {
-				throw BusinessException.field(CommonErrorCode.VALIDATION_FAILED, "startAt");
+				throw BusinessException.fieldMessage(CommonErrorCode.VALIDATION_FAILED, "startAt",
+						"Başlangıç ve bitiş saatini seçin.");
 			}
 			start = in.startAt().truncatedTo(ChronoUnit.MINUTES);
 			end = in.endAt().truncatedTo(ChronoUnit.MINUTES);
@@ -282,7 +284,8 @@ public class CalendarEntryService {
 	private static String title(String raw) {
 		String t = TextNormalizer.clean(raw);
 		if (t == null || t.length() < 2 || t.length() > 150) {
-			throw BusinessException.field(CommonErrorCode.VALIDATION_FAILED, "title");
+			throw BusinessException.fieldMessage(CommonErrorCode.VALIDATION_FAILED, "title",
+					"Başlık 2–150 karakter olmalıdır.");
 		}
 		return t;
 	}

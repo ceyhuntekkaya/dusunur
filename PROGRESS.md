@@ -273,7 +273,7 @@
 
 ### Faz 6 kapanışı (sıralı, ana oturum)
 
-- [ ] **6-B05** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 06 §9, 00 §14
+- [x] **6-B05** Zorunlu testleri yaz ve `./mvnw -q test` çalıştır → 06 §9, 00 §14
 - [ ] **6-X01** Entegrasyon kontrolü (curl ile takvim uçları, lint, build) → 06 §5
 
 ---

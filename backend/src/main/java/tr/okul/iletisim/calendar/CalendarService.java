@@ -271,7 +271,8 @@ public class CalendarService {
 	private static String name(String raw) {
 		String name = TextNormalizer.clean(raw);
 		if (name == null || name.length() < 2 || name.length() > 100) {
-			throw BusinessException.field(CommonErrorCode.VALIDATION_FAILED, "name");
+			throw BusinessException.fieldMessage(CommonErrorCode.VALIDATION_FAILED, "name",
+					"Takvim adı 2–100 karakter olmalıdır.");
 		}
 		return name;
 	}
