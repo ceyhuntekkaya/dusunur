@@ -36,7 +36,7 @@
 ## Faz 0 — Kurulum (sıralı, ana oturum)
 
 - [x] **0-X01** Git deposunu başlat, `.gitignore` dosyasını yaz. Kapsam: `backend/target`, `frontend/.next`, `node_modules`, `.env`, `data/` → 00 §3
-- [ ] **0-B01** Backend iskeletini kur:
+- [x] **0-B01** Backend iskeletini kur:
   - start.spring.io ile projeyi oluştur ve ek bağımlılıkları ekle
   - `application.yml` ile `dev` ve `prod` profillerini yaz
   - `AppProperties` sınıfını yaz
