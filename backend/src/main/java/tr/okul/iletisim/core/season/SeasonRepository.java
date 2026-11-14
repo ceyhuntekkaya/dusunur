@@ -13,4 +13,8 @@ public interface SeasonRepository extends JpaRepository<Season, Long> {
 
 	List<Season> findAllByOrderByNameDesc();
 
+	boolean existsByNameAndIdNot(String name, Long id);
+
+	boolean existsByNameGreaterThanAndIdNot(String name, Long id);
+
 }

@@ -49,3 +49,8 @@ export function optionalText(max: number, label = "Açıklama") {
     .transform((s) => s.trim())
     .pipe(z.string().max(max, `${label} en fazla ${max} karakter olabilir.`));
 }
+
+export const entityNameSchema = z
+  .string()
+  .transform(collapse)
+  .pipe(z.string().min(2, "Ad 2–100 karakter olmalıdır.").max(100, "Ad 2–100 karakter olmalıdır."));

@@ -10,6 +10,8 @@ export type PrimaryAction = {
   onClick?: () => void;
   href?: string;
   icon?: LucideIcon;
+  disabled?: boolean;
+  disabledReason?: string;
 };
 
 type Props = {
@@ -34,19 +36,23 @@ export function PageHeader({ title, description, actions, primaryAction }: Props
       <div className="flex items-center gap-2">
         {actions}
         {primaryAction && (
-          <Button
-            className="hidden h-10 md:inline-flex"
-            onClick={primaryAction.onClick}
-            {...linkProps}
-          >
-            <Icon aria-hidden />
-            {primaryAction.label}
-          </Button>
+          <span title={primaryAction.disabled ? primaryAction.disabledReason : undefined} className="hidden md:inline-flex">
+            <Button
+              className="h-10"
+              disabled={primaryAction.disabled}
+              onClick={primaryAction.onClick}
+              {...linkProps}
+            >
+              <Icon aria-hidden />
+              {primaryAction.label}
+            </Button>
+          </span>
         )}
       </div>
       {primaryAction && (
         <Button
           aria-label={primaryAction.label}
+          disabled={primaryAction.disabled}
           className="fixed right-4 bottom-[calc(64px+env(safe-area-inset-bottom)+16px)] z-30 size-14 rounded-full shadow-lg md:hidden"
           onClick={primaryAction.onClick}
           {...linkProps}

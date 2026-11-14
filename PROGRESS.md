@@ -128,24 +128,24 @@
 
 **Backend**
 
-- [ ] **1-B11** Personel yönetimini yaz:
+- [x] **1-B11** Personel yönetimini yaz:
   - Liste, detay, lookup, titles
   - create, update, send-setup-link
   - deactivation-check, deactivate, reactivate
   - Çekirdeğin `UserDeactivationHook` uygulaması
 
   → 01 §2.6, §6.6, §8
-- [ ] **1-B12** CSV içe aktarmayı yaz: şablon, import ve asenkron e-posta işi → 01 §6.7
-- [ ] **1-B13** Yıl ve atama API'sini yaz: liste, CRUD, memberships, batch, bulk-update, bulk-delete, copy, unassigned, activation-preview, activate → 01 §2.4, §2.5, §6.8
-- [ ] **1-B14** Grup API'sini, rehber aramasını ve `AudienceResolver` servisini yaz → 01 §2.8, §2.9, §6.4, §6.9
-- [ ] **1-B15** `MaintenanceJobs` ve `DevDataSeeder` sınıflarını yaz → 01 §9
+- [x] **1-B12** CSV içe aktarmayı yaz: şablon, import ve asenkron e-posta işi → 01 §6.7
+- [x] **1-B13** Yıl ve atama API'sini yaz: liste, CRUD, memberships, batch, bulk-update, bulk-delete, copy, unassigned, activation-preview, activate → 01 §2.4, §2.5, §6.8
+- [x] **1-B14** Grup API'sini, rehber aramasını ve `AudienceResolver` servisini yaz → 01 §2.8, §2.9, §6.4, §6.9
+- [x] **1-B15** `MaintenanceJobs` ve `DevDataSeeder` sınıflarını yaz → 01 §9
 
 **Frontend**
 
-- [ ] **1-F09** Yönetim yerleşimini ve Şubeler ekranını yaz → 01 §10 S-7, S-11
-- [ ] **1-F10** Personel ekranını yaz: liste, form, `MembershipFields`, pasifleştir/aktifleştir, şifre bağlantısı, toplu yükleme → 01 §10 S-8
-- [ ] **1-F11** Yıllar ekranlarını yaz: liste, detay, kopyala, toplu işlemler, aktifleştir → 01 §10 S-9, S-10
-- [ ] **1-F12** Gruplar ve Denetim Kaydı ekranlarını yaz → 01 §10 S-12, S-13
+- [x] **1-F09** Yönetim yerleşimini ve Şubeler ekranını yaz → 01 §10 S-7, S-11
+- [x] **1-F10** Personel ekranını yaz: liste, form, `MembershipFields`, pasifleştir/aktifleştir, şifre bağlantısı, toplu yükleme → 01 §10 S-8
+- [x] **1-F11** Yıllar ekranlarını yaz: liste, detay, kopyala, toplu işlemler, aktifleştir → 01 §10 S-9, S-10
+- [x] **1-F12** Gruplar ve Denetim Kaydı ekranlarını yaz → 01 §10 S-12, S-13
 
 ### Faz 1 kapanışı (sıralı, ana oturum)
 

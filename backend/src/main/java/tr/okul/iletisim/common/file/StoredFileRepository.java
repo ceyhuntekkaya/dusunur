@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StoredFileRepository extends JpaRepository<StoredFile, UUID> {
 
+	java.util.List<StoredFile> findByAttachedFalseAndDeletedAtIsNullAndCreatedAtBefore(java.time.OffsetDateTime before);
+
 }

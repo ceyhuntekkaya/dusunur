@@ -6,6 +6,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SelectedChips } from "@/components/common/SelectedChips";
 import { UserAvatar } from "@/components/common/UserAvatar";
+import { useAdminUserLookup } from "@/features/core/admin-api";
 import { useDirectorySearch } from "@/features/core/api";
 import type { DirUser } from "@/features/core/types";
 import { useDebouncedValue } from "@/lib/debounce";
@@ -18,6 +19,7 @@ type Props = {
   excludeIds?: number[];
   id?: string;
   invalid?: boolean;
+  lookup?: { seasonId?: number };
 };
 
 export function UserPicker({
@@ -28,14 +30,18 @@ export function UserPicker({
   excludeIds = [],
   id,
   invalid,
+  lookup,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const q = useDebouncedValue(input.trim(), 300);
-  const search = useDirectorySearch({ q, kinds: ["user"], enabled: q.length >= 2 });
+  const search = useDirectorySearch({ q, kinds: ["user"], enabled: !lookup && q.length >= 2 });
+  const adminSearch = useAdminUserLookup(q, lookup?.seasonId, !!lookup);
+  const found = lookup ? (adminSearch.data ?? []) : (search.data?.users ?? []);
+  const fetching = lookup ? adminSearch.isFetching : search.isFetching;
 
   const selectedIds = new Set(value.map((u) => u.id));
-  const users = (q.length >= 2 ? (search.data?.users ?? []) : []).filter(
+  const users = (q.length >= 2 ? found : []).filter(
     (u) => !excludeIds.includes(u.id) && !(multiple && selectedIds.has(u.id)),
   );
 
@@ -76,7 +82,7 @@ export function UserPicker({
                 <p className="py-6 text-center text-sm text-muted-foreground">
                   Aramak için en az 2 harf yazın.
                 </p>
-              ) : search.isFetching && users.length === 0 ? (
+              ) : fetching && users.length === 0 ? (
                 <div className="flex justify-center py-6">
                   <Loader2 className="size-4 animate-spin text-muted-foreground" aria-label="Aranıyor" />
                 </div>

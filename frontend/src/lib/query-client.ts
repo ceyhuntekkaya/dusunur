@@ -11,8 +11,12 @@ export const SESSION_ENDING_CODES = [
 
 const AUTH_PAGES = ["/giris", "/sifremi-unuttum", "/sifre-belirle"];
 
-export function toastError(message: string) {
-  toast.error(message, { duration: 6000 });
+export function toastError(message: string, details: string[] = []) {
+  toast.error(message, {
+    duration: 6000,
+    description: details.length > 0 ? details.slice(0, 5).join("\n") : undefined,
+    classNames: { description: "whitespace-pre-line" },
+  });
 }
 
 function handleError(error: unknown, silent: boolean) {
@@ -40,7 +44,7 @@ function handleError(error: unknown, silent: boolean) {
     return;
   }
 
-  if (!silent) toastError(error.message);
+  if (!silent) toastError(error.message, error.details);
 }
 
 export const queryClient: QueryClient = new QueryClient({

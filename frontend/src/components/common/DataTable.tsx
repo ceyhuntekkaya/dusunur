@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Inbox } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ import { cn } from "@/lib/utils";
 
 export type Column<T> = {
   key: string;
-  header: string;
+  header: React.ReactNode;
   cell: (row: T) => React.ReactNode;
   className?: string;
 };
@@ -31,6 +32,8 @@ type Props<T> = {
   error?: unknown;
   onRetry?: () => void;
   emptyMessage: string;
+  onRowClick?: (row: T) => void;
+  expandedRow?: (row: T) => React.ReactNode;
   emptyIcon?: LucideIcon;
   pagination?: {
     page: number;
@@ -48,6 +51,8 @@ export function DataTable<T>({
   error,
   onRetry,
   emptyMessage,
+  onRowClick,
+  expandedRow,
   emptyIcon = Inbox,
   pagination,
 }: Props<T>) {
@@ -79,15 +84,30 @@ export function DataTable<T>({
                   ))}
                 </TableRow>
               ))
-            : rows.map((row) => (
-                <TableRow key={rowKey(row)}>
-                  {columns.map((c) => (
-                    <TableCell key={c.key} className={cn(c.className)}>
-                      {c.cell(row)}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+            : rows.map((row) => {
+                const extra = expandedRow?.(row);
+                return (
+                  <Fragment key={rowKey(row)}>
+                    <TableRow
+                      className={onRowClick ? "cursor-pointer" : undefined}
+                      onClick={onRowClick ? () => onRowClick(row) : undefined}
+                    >
+                      {columns.map((c) => (
+                        <TableCell key={c.key} className={cn(c.className)}>
+                          {c.cell(row)}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                    {extra && (
+                      <TableRow className="hover:bg-transparent">
+                        <TableCell colSpan={columns.length} className="bg-muted/40 whitespace-normal">
+                          {extra}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
+                );
+              })}
         </TableBody>
       </Table>
       {pagination && pagination.total > pagination.size && (
