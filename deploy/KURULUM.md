@@ -15,6 +15,8 @@ Bu kılavuz okulun BT sorumlusu içindir. Komutlar sunucuda, projenin kök klas�
 2. `.env` dosyasını doldurun: veritabanı şifresi, `APP_BASE_URL` (okulun https adresi), `APP_INSTITUTION_NAME`, SMTP bilgileri, `MAIL_FROM`.
 3. VAPID anahtarlarını üretin: `npx web-push generate-vapid-keys`. Çıkan açık anahtarı `VAPID_PUBLIC_KEY`, gizli anahtarı `VAPID_PRIVATE_KEY` olarak yazın.
 4. İlk yönetici için `BOOTSTRAP_ADMIN_EMAIL` ve `BOOTSTRAP_ADMIN_PASSWORD` değerlerini yazın.
+5. SMTP sunucunuz kullanıcı adı/şifre veya STARTTLS gerektirmiyorsa `SMTP_AUTH` ve `SMTP_STARTTLS` değerlerini `false` yapın (587 portu genellikle ikisini de ister).
+6. `chmod 600 .env`
 
 ## 3. Sertifika
 
@@ -31,10 +33,10 @@ Sertifika dosyalarını `deploy/nginx/certs/` klasörüne koyun:
 
 ## 5. İlk çalıştırma
 
-1. `docker compose -f deploy/docker-compose.yml up -d --build`
+1. `docker compose --env-file .env -f deploy/docker-compose.yml up -d --build`
 2. Tarayıcıdan okulun adresini açın ve `BOOTSTRAP_ADMIN_*` ile ilk yönetici girişini yapın.
 3. `.env` dosyasından `BOOTSTRAP_ADMIN_EMAIL` ve `BOOTSTRAP_ADMIN_PASSWORD` satırlarını silin.
-4. `docker compose -f deploy/docker-compose.yml up -d` ile servisleri yeniden başlatın.
+4. `docker compose --env-file .env -f deploy/docker-compose.yml up -d` ile servisleri yeniden başlatın.
 
 ## 6. İlk veri sırası
 
@@ -53,24 +55,26 @@ Her gece yedek almak için sunucunun crontab'ına (`crontab -e`) şu satırı ek
 30 2 * * * /opt/iletisim/deploy/backup.sh
 ```
 
-Yedekler `/backup` klasörüne yazılır: `db-YYYY-MM-DD.dump` (veritabanı) ve `files/` (yüklenen dosyalar). 14 günden eski veritabanı yedekleri otomatik silinir.
+Yedekler `/backup` klasörüne yazılır: `db-YYYY-MM-DD.dump` (veritabanı), `files/` (yüklenen dosyalar), `env-YYYY-MM-DD.bak` (`.env`, VAPID anahtarı dahil) ve `certs/` (sertifikalar). 14 günden eski veritabanı ve `.env` yedekleri otomatik silinir. Betik `rsync` gerektirir (`apt install rsync`). `/backup` klasörünü düzenli olarak sunucu dışına da kopyalayın ve diskin dolmadığını izleyin.
 
 ### Geri yükleme
 
-Komutlar `deploy/` klasöründe çalıştırılır.
+Komutlar `deploy/` klasöründe çalıştırılır. Önce ortam değişkenlerini yükleyin: `set -a; . ../.env; set +a` (`.env` içinde boşluklu değer varsa tırnak içine alın) ve `docker compose` komutlarına `--env-file ../.env` ekleyin.
 
-1. Backend'i durdurun: `docker compose stop backend`
-2. Veritabanını geri yükleyin: `docker compose exec -T db pg_restore -c -U $POSTGRES_USER -d $POSTGRES_DB < /backup/db-YYYY-MM-DD.dump`
+1. Backend'i durdurun: `docker compose --env-file ../.env stop backend`
+2. Veritabanını geri yükleyin: `docker compose --env-file ../.env exec -T db pg_restore -c -U $POSTGRES_USER -d $POSTGRES_DB < /backup/db-YYYY-MM-DD.dump`
 3. Dosyaları geri yükleyin: `rsync -a /backup/files/` içeriğini dosya volume'unun içine kopyalayın (yeri: `docker volume inspect deploy_files -f '{{ .Mountpoint }}'`).
-4. Backend'i başlatın: `docker compose start backend`
+4. Backend'i başlatın: `docker compose --env-file ../.env start backend`
 5. Giriş yapın, bir doküman açın ve bir fotokopi talebinin dosyasını indirerek kontrol edin.
 
 Son geri yükleme testi: {tarih}
 
 ## 8. Güncelleme
 
-1. `git pull`
-2. `docker compose -f deploy/docker-compose.yml up -d --build`
+1. `deploy/backup.sh` ile yedek alın.
+2. `git pull`
+3. `docker compose --env-file .env -f deploy/docker-compose.yml up -d --build`
+4. `docker compose --env-file .env -f deploy/docker-compose.yml restart nginx` (konteynerler yeniden oluşunca nginx eski adresi tutabilir).
 
 Veritabanı geçişlerini Flyway otomatik uygular.
 
@@ -79,7 +83,7 @@ Veritabanı geçişlerini Flyway otomatik uygular.
 Kullanıcı ekranda bir hata kodu (`traceId`) iletirse loglarda arayın:
 
 ```
-docker compose -f deploy/docker-compose.yml logs backend | grep {traceId}
+docker compose --env-file .env -f deploy/docker-compose.yml logs backend | grep {traceId}
 ```
 
 ## 10. Yıl devri (her yaz)
@@ -92,3 +96,7 @@ docker compose -f deploy/docker-compose.yml logs backend | grep {traceId}
 6. Yıl aktifleştirilir. Bu adım eski yılın açık fotokopi taleplerini iptal eder.
 
 Not: Takvim yıldan bağımsız olduğu için yeni yılın kurum takvimi yaz döneminde önceden doldurulabilir.
+
+## 11. Sertifika yenileme
+
+Yeni `fullchain.pem` ve `privkey.pem` dosyalarını `deploy/nginx/certs/` klasörüne koyduktan sonra `docker compose --env-file .env -f deploy/docker-compose.yml exec nginx nginx -s reload` çalıştırın.

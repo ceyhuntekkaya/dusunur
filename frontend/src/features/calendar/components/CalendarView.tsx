@@ -1,13 +1,13 @@
 "use client";
 
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import trLocale from "@fullcalendar/core/locales/tr";
-import type { DatesSetArg, EventClickArg } from "@fullcalendar/core";
+import type { DatesSetArg, EventClickArg, EventInput } from "@fullcalendar/core";
 import { addHours, setHours, startOfDay } from "date-fns";
 import { ChevronLeft, ChevronRight, ListIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -73,10 +73,27 @@ export const CalendarView = forwardRef<CalendarViewHandle, Props>(function Calen
 
   useImperativeHandle(ref, () => ({ refetch: () => fc.current?.getApi().refetchEvents() }));
 
+  const loadEvents = useCallback(
+    (info: { startStr: string; endStr: string }, ok: (e: EventInput[]) => void, fail: (e: Error) => void) => {
+      const ids = idsRef.current;
+      if (ids.length === 0) {
+        ok([]);
+        return;
+      }
+      fetchEntries(info.startStr, info.endStr, ids)
+        .then((entries) => ok(entries.map((e) => toFcEvent(e, colors.current.get(e.calendarId) ?? "#0A66C2"))))
+        .catch((err: unknown) => {
+          toastError(err instanceof ApiError ? err.message : "Kayıtlar yüklenemedi. Lütfen tekrar deneyin.");
+          fail(err instanceof Error ? err : new Error("events"));
+        });
+    },
+    [],
+  );
+
   function onDatesSet(info: DatesSetArg) {
     setTitle(info.view.title);
     const key = REVERSE[info.view.type];
-    if (key) onViewChange(key, toDateInput(fc.current!.getApi().getDate()));
+    if (key) onViewChange(key, toDateInput(info.view.calendar.getDate()));
   }
 
   function defaultsForDay(date: Date): EntryDefaults {
@@ -158,19 +175,7 @@ export const CalendarView = forwardRef<CalendarViewHandle, Props>(function Calen
           unselectAuto
           datesSet={onDatesSet}
           loading={setLoading}
-          events={(info, ok, fail) => {
-            const ids = idsRef.current;
-            if (ids.length === 0) {
-              ok([]);
-              return;
-            }
-            fetchEntries(info.startStr, info.endStr, ids)
-              .then((entries) => ok(entries.map((e) => toFcEvent(e, colors.current.get(e.calendarId) ?? "#2453C7"))))
-              .catch((err: unknown) => {
-                toastError(err instanceof ApiError ? err.message : "Kayıtlar yüklenemedi. Lütfen tekrar deneyin.");
-                fail(err instanceof Error ? err : new Error("events"));
-              });
-          }}
+          events={loadEvents}
           eventClick={(info: EventClickArg) => {
             info.jsEvent.preventDefault();
             onOpenEntry(info.event.extendedProps.entry as EntryDto);

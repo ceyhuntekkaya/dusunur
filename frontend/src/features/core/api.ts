@@ -63,8 +63,12 @@ export function useKvkk(enabled: boolean) {
 }
 
 export function useAcceptKvkk() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: () => api<void>("/api/auth/kvkk/accept", { method: "POST" }),
+    onSuccess: () => {
+      void qc.invalidateQueries();
+    },
   });
 }
 

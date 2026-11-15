@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowUp, ChevronDown, Image as ImageIcon, MoreHorizontal, Paperclip, Plus, X } from "lucide-react";
+import { ArrowUp, ChevronDown, Image as ImageIcon, MoreHorizontal, Paperclip, Plus, Users, X } from "lucide-react";
 import { ArchiveBanner } from "@/components/common/ArchiveBanner";
 import { EmptyState } from "@/components/common/EmptyState";
 import { InfiniteList } from "@/components/common/InfiniteList";
@@ -23,6 +23,8 @@ import {
 import { useFeedSeasons, useMyGroups, usePinnedPosts } from "@/features/akis/api";
 import { Composer } from "@/features/akis/components/Composer";
 import { PostCard } from "@/features/akis/components/PostCard";
+import { ProfileCard } from "@/features/akis/components/ProfileCard";
+import { SideSummary } from "@/features/akis/components/SideSummary";
 import { UnreadImportantCard } from "@/features/akis/components/UnreadImportantCard";
 import type { FeedFilter, NewPostEvent, PostDto } from "@/features/akis/types";
 import { useBadges } from "@/features/core/api";
@@ -68,7 +70,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick?: () => 
     <Button
       type="button"
       variant={active ? "default" : "outline"}
-      className={cn("h-10 shrink-0 rounded-full px-4")}
+      className={cn("h-10 shrink-0 rounded-full px-4", active && "border-success bg-success hover:bg-success/90")}
       aria-pressed={active}
       onClick={onClick}
     >
@@ -137,23 +139,41 @@ export default function FeedPage() {
   const seasonName = seasons.data?.find((s) => s.id === seasonId)?.name ?? "";
 
   return (
-    <div className="mx-auto flex max-w-[1000px] items-start justify-center gap-6">
-      <div className="w-full max-w-[640px] min-w-0">
-        <button
-          type="button"
-          onClick={() => setComposer(true)}
-          className="mb-4 hidden w-full items-center gap-3 rounded-xl border bg-card p-3 text-left md:flex"
-        >
-          {me && <UserAvatar userId={me.id} name={me.fullName} size="md" />}
-          <span className="flex h-11 flex-1 items-center rounded-full bg-muted px-4 text-[15px] text-muted-foreground">
-            Ne paylaşmak istersiniz?
-          </span>
-          <Paperclip className="size-5 text-muted-foreground" aria-hidden />
-          <ImageIcon className="size-5 text-muted-foreground" aria-hidden />
-        </button>
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+      <div className="min-w-0">
+        <div className="mb-3 hidden rounded-xl border bg-card p-3 md:block">
+          <div className="flex items-center gap-3">
+            {me && <UserAvatar userId={me.id} name={me.fullName} size="md" className="size-12" />}
+            <button
+              type="button"
+              onClick={() => setComposer(true)}
+              className="flex h-12 flex-1 items-center rounded-full border border-input px-4 text-left text-[15px] font-medium text-muted-foreground outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              Ne paylaşmak istersiniz?
+            </button>
+          </div>
+          <div className="mt-2 flex gap-1">
+            <button
+              type="button"
+              onClick={() => setComposer(true)}
+              className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted"
+            >
+              <ImageIcon className="size-5 text-[#378FE9]" aria-hidden />
+              Fotoğraf
+            </button>
+            <button
+              type="button"
+              onClick={() => setComposer(true)}
+              className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted"
+            >
+              <Paperclip className="size-5 text-[#C37D16]" aria-hidden />
+              Dosya
+            </button>
+          </div>
+        </div>
 
         {unread > 0 && (
-          <div className="mb-4 flex items-center gap-3 rounded-lg border-l-4 border-l-important bg-important-bg px-4 py-3 xl:hidden">
+          <div className="mb-4 flex items-center gap-3 rounded-lg border-l-4 border-l-important bg-important-bg px-4 py-3 lg:hidden">
             <p className="flex-1 text-sm">Okumanız gereken {unread} önemli duyuru var.</p>
             <Button className="h-11 md:h-10" variant="outline" onClick={() => setFilter("unreadImportant")}>
               Göster
@@ -175,7 +195,7 @@ export default function FeedPage() {
               </Chip>
             ) : (
               <DropdownMenu>
-                <DropdownMenuTrigger render={<Button variant="outline" className="h-10 shrink-0 rounded-full px-4" />}>
+                <DropdownMenuTrigger render={<Button variant="outline" className="h-10 shrink-0 rounded-full px-4 lg:hidden" />}>
                   Gruplar
                   <ChevronDown aria-hidden />
                 </DropdownMenuTrigger>
@@ -271,8 +291,32 @@ export default function FeedPage() {
         />
       </div>
 
-      <aside className="sticky top-20 hidden w-[300px] shrink-0 xl:block">
+      <aside className="sticky top-[68px] hidden max-h-[calc(100vh-84px)] space-y-2 overflow-y-auto lg:block">
+        {me && <ProfileCard me={me} />}
+        {groups.data && groups.data.length > 0 && (
+          <section className="rounded-xl border bg-card py-3" aria-label="Gruplarım">
+            <h2 className="px-4 pb-1 text-sm font-semibold">Gruplarım</h2>
+            <ul>
+              {groups.data.map((g) => (
+                <li key={g.id}>
+                  <button
+                    type="button"
+                    onClick={() => setFilter("group", g.id)}
+                    className={cn(
+                      "flex min-h-10 w-full items-center gap-2 px-4 text-left text-[13px] font-medium hover:bg-muted",
+                      filter === "group" && groupId === g.id && "text-primary",
+                    )}
+                  >
+                    <Users className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                    <span className="truncate">{g.name}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         <UnreadImportantCard />
+        <SideSummary />
       </aside>
 
       <Button

@@ -27,6 +27,7 @@ app:
   cleanup: { orphan-file-hours: 24, notification-retention-days: 90 }
 ---
 spring.config.activate.on-profile: dev
+app.allowed-origins: ["http://localhost:*"]
 logging.level.tr.okul: DEBUG
 ---
 spring.config.activate.on-profile: prod

@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
 
-	Optional<ChatMessage> findBySenderIdAndClientId(Long senderId, UUID clientId);
+	Optional<ChatMessage> findByConversationIdAndSenderIdAndClientId(Long conversationId, Long senderId, UUID clientId);
 
 }

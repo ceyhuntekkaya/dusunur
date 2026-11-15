@@ -51,7 +51,9 @@ function Body({ user, onClose }: { user: AdminUserRow; onClose: () => void }) {
           <p className="font-medium">Devredilecek sorumluluklar:</p>
           <ul className="mt-1 list-disc pl-5">
             {items.map((i) => (
-              <li key={i.label}>{i.label}</li>
+              <li key={i.label}>
+                {i.count} {i.label}
+              </li>
             ))}
           </ul>
         </div>

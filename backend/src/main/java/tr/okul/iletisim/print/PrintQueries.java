@@ -273,15 +273,15 @@ public class PrintQueries {
 				""").param("sid", seasonId).query(Integer.class).single();
 	}
 
-	public List<Long> purgeCandidates(OffsetDateTime cutoff, int limit) {
+	public List<Long> purgeCandidates(OffsetDateTime cutoff, long afterId, int limit) {
 		return jdbc.sql("""
 				SELECT id FROM print_request
-				WHERE file_id IS NOT NULL AND file_purged_at IS NULL AND (
+				WHERE id > :afterId AND file_id IS NOT NULL AND file_purged_at IS NULL AND (
 				      (status = 'DELIVERED' AND delivered_at < :cutoff)
 				   OR (status = 'REJECTED' AND decided_at < :cutoff)
 				   OR (status = 'CANCELLED' AND cancelled_at < :cutoff))
 				ORDER BY id LIMIT :limit
-				""").param("cutoff", cutoff).param("limit", limit).query(Long.class).list();
+				""").param("cutoff", cutoff).param("afterId", afterId).param("limit", limit).query(Long.class).list();
 	}
 
 	public MonthlyReport report(String month, LocalDate first, Long branchId) {

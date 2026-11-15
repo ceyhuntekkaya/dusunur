@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { FormActions } from "@/components/common/FormActions";
 import { FormField } from "@/components/common/FormField";
@@ -37,6 +38,11 @@ function Form({ kind, calendar, onClose }: { kind: Props["kind"]; calendar?: Cal
     },
   });
   const { register, formState, watch, setValue } = form;
+  const branchPending = resource && !!calendar?.branchName && branches.isPending;
+
+  useEffect(() => {
+    if (initialBranch && !form.getFieldState("branchId").isDirty) setValue("branchId", String(initialBranch));
+  }, [initialBranch, form, setValue]);
 
   const onSubmit = form.submit(async (v) => {
     const body = {
@@ -87,7 +93,7 @@ function Form({ kind, calendar, onClose }: { kind: Props["kind"]; calendar?: Cal
           />
         </FormField>
       )}
-      <FormActions submitLabel="Kaydet" submitting={formState.isSubmitting} onCancel={onClose} />
+      <FormActions submitLabel="Kaydet" submitting={formState.isSubmitting} disabled={branchPending} onCancel={onClose} />
     </form>
   );
 }

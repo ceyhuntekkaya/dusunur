@@ -13,6 +13,7 @@ import type {
   PrintChangedEvent,
   PrintContext,
   PrintRequestDetail,
+  PrintRequestRow,
   PrintSeason,
   QueueBoard,
 } from "./types";
@@ -32,6 +33,26 @@ export function usePrintContext() {
   return useQuery({
     queryKey: ["print", "context"],
     queryFn: () => api<PrintContext>("/api/print/context"),
+  });
+}
+
+export function useMyActiveRequests() {
+  return useQuery({
+    queryKey: ["print", "summary", "active"],
+    queryFn: async () => {
+      const [open, ready] = await Promise.all([
+        api<PageResponse<PrintRequestRow>>("/api/print/requests/mine?group=open&size=5"),
+        api<PageResponse<PrintRequestRow>>("/api/print/requests/mine?group=ready&size=5"),
+      ]);
+      return [...open.items, ...ready.items].sort((a, b) => a.dueAt.localeCompare(b.dueAt)).slice(0, 5);
+    },
+  });
+}
+
+export function usePendingApprovals() {
+  return useQuery({
+    queryKey: ["print", "summary", "approvals"],
+    queryFn: () => api<PageResponse<PrintRequestRow>>("/api/print/approvals?tab=pending&size=5"),
   });
 }
 
@@ -156,6 +177,7 @@ export function usePrintTransition() {
       toast.success(SUCCESS[v.action]);
       refresh(qc);
     },
+    onError: () => refresh(qc),
   });
 }
 

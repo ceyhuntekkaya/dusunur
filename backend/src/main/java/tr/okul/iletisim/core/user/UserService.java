@@ -138,12 +138,10 @@ public class UserService {
 		track(changed, "phone", u.getPhone(), phone);
 		track(changed, "discipline", u.getDiscipline(), in.discipline());
 		track(changed, "systemAdmin", u.isSystemAdmin(), in.systemAdmin());
-		if (in.membership() != null) {
+		boolean emailChanged = !Objects.equals(u.getEmail(), in.email());
+		if (in.membership() != null && u.getStatus() != UserStatus.PASSIVE) {
 			Season active = activeSeason();
 			SeasonMembership before = memberships.findBySeasonIdAndUserId(active.getId(), id).orElse(null);
-			if (u.getStatus() == UserStatus.PASSIVE) {
-				throw new BusinessException(CoreErrorCode.SEASON_USER_PASSIVE);
-			}
 			if (membershipChanged(before, in.membership())) {
 				changed.add("membership");
 			}
@@ -151,6 +149,9 @@ public class UserService {
 		}
 		fill(u, in);
 		users.saveAndFlush(u);
+		if (emailChanged) {
+			tokens.invalidateOpen(id);
+		}
 		audit.log(me.userId(), CoreAuditAction.USER_UPDATED, "USER", id, Map.of("changed", changed));
 		return queries.row(id);
 	}

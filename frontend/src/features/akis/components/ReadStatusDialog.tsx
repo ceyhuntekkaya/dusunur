@@ -33,7 +33,7 @@ function UserRow({ u }: { u: ReadUser }) {
   );
 }
 
-function Content({ postId }: { postId: number }) {
+function Content({ postId, archived }: { postId: number; archived: boolean }) {
   const status = useReadStatus(postId, true);
   const remind = useRemind(postId);
   const [tab, setTab] = useState<"unread" | "read">("unread");
@@ -83,6 +83,7 @@ function Content({ postId }: { postId: number }) {
         ) : (
           <span />
         )}
+        {!archived && (
         <Button
           className="h-11 md:h-10"
           disabled={unread.length === 0 || recent || remind.isPending}
@@ -95,6 +96,7 @@ function Content({ postId }: { postId: number }) {
           {remind.isPending && <Loader2 className="animate-spin" aria-hidden />}
           Okumayanlara Hatırlat
         </Button>
+        )}
       </div>
     </div>
   );
@@ -102,16 +104,18 @@ function Content({ postId }: { postId: number }) {
 
 export function ReadStatusDialog({
   postId,
+  archived,
   open,
   onOpenChange,
 }: {
   postId: number;
+  archived: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
   return (
     <ResponsiveDialog open={open} onOpenChange={onOpenChange} title="Okuma Durumu">
-      {open && <Content postId={postId} />}
+      {open && <Content postId={postId} archived={archived} />}
     </ResponsiveDialog>
   );
 }

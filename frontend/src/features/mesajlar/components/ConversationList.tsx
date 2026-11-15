@@ -21,7 +21,7 @@ function summary(c: ConversationRow): React.ReactNode {
   const m = c.lastMessage;
   if (!m) return "Henüz mesaj yok";
   if (m.deleted) return <em>Bu mesaj silindi</em>;
-  if (m.mine) return `Sen: ${m.snippet}`;
+  if (m.mine) return `Siz: ${m.snippet}`;
   if (c.type !== "DIRECT") return `${m.senderFirstName}: ${m.snippet}`;
   return m.snippet;
 }

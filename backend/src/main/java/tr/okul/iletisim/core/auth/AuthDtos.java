@@ -3,7 +3,9 @@ package tr.okul.iletisim.core.auth;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public final class AuthDtos {
 
@@ -14,8 +16,8 @@ public final class AuthDtos {
 	}
 
 	public record LoginRequest(
-			@NotBlank(message = "E-posta adresinizi girin.") String email,
-			@NotBlank(message = "Şifrenizi girin.") String password) {
+			@NotBlank(message = "E-posta adresinizi girin.") @Size(max = 254, message = "E-posta adresi çok uzun.") String email,
+			@NotBlank(message = "Şifrenizi girin.") @Size(max = 200, message = "Şifre çok uzun.") String password) {
 	}
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
@@ -43,10 +45,11 @@ public final class AuthDtos {
 
 	public record ChangePasswordRequest(
 			@NotBlank(message = "Mevcut şifrenizi girin.") String currentPassword,
-			@Pattern(regexp = PASSWORD_REGEX, message = PASSWORD_MESSAGE) String newPassword) {
+			@NotNull(message = PASSWORD_MESSAGE) @Pattern(regexp = PASSWORD_REGEX, message = PASSWORD_MESSAGE) String newPassword) {
 	}
 
-	public record ForgotPasswordRequest(@NotBlank(message = "E-posta adresinizi girin.") String email) {
+	public record ForgotPasswordRequest(
+			@NotBlank(message = "E-posta adresinizi girin.") @Size(max = 254, message = "E-posta adresi çok uzun.") String email) {
 	}
 
 	public record MessageResponse(String message) {
@@ -57,7 +60,7 @@ public final class AuthDtos {
 
 	public record SetPasswordRequest(
 			@NotBlank(message = "Bağlantı geçersiz.") String token,
-			@Pattern(regexp = PASSWORD_REGEX, message = PASSWORD_MESSAGE) String newPassword) {
+			@NotNull(message = PASSWORD_MESSAGE) @Pattern(regexp = PASSWORD_REGEX, message = PASSWORD_MESSAGE) String newPassword) {
 	}
 
 }

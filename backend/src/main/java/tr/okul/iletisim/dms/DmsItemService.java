@@ -118,6 +118,12 @@ public class DmsItemService {
 		return queries.search(me, q);
 	}
 
+	@Transactional(readOnly = true)
+	public List<SearchResult> recentFiles(UserContext me) {
+		me.requireMember();
+		return queries.recentFiles(me, 5);
+	}
+
 	@Transactional
 	public FolderRow createFolder(UserContext me, long spaceId, FolderCreateRequest req) {
 		me.requireMember();
@@ -293,6 +299,7 @@ public class DmsItemService {
 			throw new BusinessException(DmsErrorCode.DMS_NAME_EXISTS, f.getName());
 		}
 		f.setFolderId(targetId);
+		f.setUpdatedBy(me.userId());
 		files.saveAndFlush(f);
 	}
 
@@ -411,6 +418,16 @@ public class DmsItemService {
 			}
 			else {
 				baseDepth = p.getDepth();
+			}
+		}
+		if (parent != null) {
+			Integer maxDepth = jdbc.sql("SELECT max(depth) FROM dms_folder WHERE trashed_with = :id")
+					.param("id", f.getId()).query(Integer.class).single();
+			int deepest = Math.max(f.getDepth(), maxDepth == null ? 0 : maxDepth);
+			if (deepest + baseDepth + 1 - f.getDepth() > MAX_DEPTH) {
+				parent = null;
+				toRoot = true;
+				baseDepth = 0;
 			}
 		}
 		final Long target = parent;

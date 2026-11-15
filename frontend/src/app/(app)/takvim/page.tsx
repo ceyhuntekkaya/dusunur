@@ -58,6 +58,8 @@ export default function CalendarPage() {
   const list = calendars.data;
   const isManager = me.data?.permissions.canEditInstitutionCalendar ?? false;
   const canCreateAny = list.some((c) => c.canCreate);
+  const shown = list.filter(vis.isVisible);
+  const soleCalendarId = shown.length === 1 && shown[0].canCreate ? shown[0].id : undefined;
   const requested = url.get("gorunum") as ViewKey;
   const picked: ViewKey = VIEWS.includes(requested) ? requested : desktop ? "ay" : "liste";
   const currentView: ViewKey = !desktop && picked === "hafta" ? "liste" : picked;
@@ -95,7 +97,7 @@ export default function CalendarPage() {
     const start = new Date();
     start.setMinutes(0, 0, 0);
     start.setHours(start.getHours() + 1);
-    setForm({ defaults: { start, end: new Date(start.getTime() + 3600_000) } });
+    setForm({ defaults: { calendarId: soleCalendarId, start, end: new Date(start.getTime() + 3600_000) } });
   };
 
   const entryCalendar = (e: EntryDto) => list.find((c) => c.id === e.calendarId);
@@ -124,7 +126,7 @@ export default function CalendarPage() {
           canCreateAny={canCreateAny}
           onViewChange={onViewChange}
           onOpenEntry={setDetail}
-          onCreateAt={(defaults) => setForm({ defaults })}
+          onCreateAt={(defaults) => setForm({ defaults: { calendarId: soleCalendarId, ...defaults } })}
           onOpenCalendars={() => setDrawer(true)}
         />
       ) : (

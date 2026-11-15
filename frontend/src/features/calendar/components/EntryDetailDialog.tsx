@@ -27,7 +27,7 @@ const PREVIEWABLE = ["pdf", "jpg", "jpeg", "png"];
 export function EntryDetailDialog({ entry, calendar, onClose, onEdit, onDeleted }: Props) {
   const del = useDeleteEntry();
   const [confirm, setConfirm] = useState(false);
-  const color = calendar?.color ?? "#2453C7";
+  const color = calendar?.color ?? "#0A66C2";
   const file = entry.file;
 
   return (

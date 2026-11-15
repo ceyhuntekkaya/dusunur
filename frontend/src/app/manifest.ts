@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "İletişim",
     start_url: "/akis",
     display: "standalone",
-    background_color: "#F5F7FA",
-    theme_color: "#2453C7",
+    background_color: "#F4F2EE",
+    theme_color: "#FFFFFF",
     lang: "tr",
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },

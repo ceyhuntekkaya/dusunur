@@ -125,9 +125,17 @@ public class FeedInteractionService {
 		if (unread.isEmpty()) {
 			throw new BusinessException(FeedErrorCode.FEED_REMIND_NONE);
 		}
-		FeedPost post = posts.findById(id).orElseThrow(() -> new BusinessException(FeedErrorCode.FEED_POST_NOT_FOUND));
-		post.setLastReminderAt(now);
-		posts.save(post);
+		int claimed = jdbc.sql("""
+				UPDATE feed_post SET last_reminder_at = now()
+				WHERE id = :id AND (last_reminder_at IS NULL OR last_reminder_at < now() - interval '24 hours')
+				""").param("id", id).update();
+		if (claimed == 0) {
+			OffsetDateTime last = jdbc.sql("SELECT last_reminder_at FROM feed_post WHERE id = :id").param("id", id)
+					.query(OffsetDateTime.class).optional().orElse(null);
+			String when = (last == null ? now : last).plus(Duration.ofHours(24)).atZoneSameInstant(ISTANBUL)
+					.format(REMIND_FORMAT);
+			throw new BusinessException(FeedErrorCode.FEED_REMIND_TOO_SOON, when);
+		}
 		notifications.notify(unread, "FEED_REMINDER", "Hatırlatma: Okumanız gereken bir önemli duyuru var",
 				FeedText.snippet(ref.content(), 120), "/akis/" + id);
 		return new RemindResponse(unread.size());

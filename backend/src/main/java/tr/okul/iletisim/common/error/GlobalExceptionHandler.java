@@ -15,14 +15,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -45,7 +48,35 @@ public class GlobalExceptionHandler {
 			"ux_user_email", new Known(CoreErrorCode.USER_EMAIL_TAKEN, "email"),
 			"ux_branch_name_key", new Known(CoreErrorCode.BRANCH_NAME_TAKEN, "name"),
 			"ux_group_name_key", new Known(CoreErrorCode.GROUP_NAME_TAKEN, "name"),
-			"ux_season_name", new Known(CoreErrorCode.SEASON_NAME_TAKEN, "name"));
+			"ux_season_name", new Known(CoreErrorCode.SEASON_NAME_TAKEN, "name"),
+			"ux_dms_space_name", new Known(ConstraintCode.DMS_SPACE_NAME_TAKEN, "name"),
+			"ux_dms_folder_name", new Known(ConstraintCode.DMS_NAME_EXISTS, "name"),
+			"ux_dms_file_name", new Known(ConstraintCode.DMS_NAME_EXISTS, "name"));
+
+	private enum ConstraintCode implements ErrorCode {
+
+		DMS_SPACE_NAME_TAKEN(HttpStatus.CONFLICT, "Bu adla bir doküman alanı zaten var."),
+		DMS_NAME_EXISTS(HttpStatus.CONFLICT, "Bu konumda aynı adda bir öğe zaten var. Başka bir ad seçin.");
+
+		private final HttpStatus status;
+		private final String message;
+
+		ConstraintCode(HttpStatus status, String message) {
+			this.status = status;
+			this.message = message;
+		}
+
+		@Override
+		public HttpStatus status() {
+			return status;
+		}
+
+		@Override
+		public String message() {
+			return message;
+		}
+
+	}
 
 	private final AppProperties app;
 
@@ -90,6 +121,19 @@ public class GlobalExceptionHandler {
 		return validation(fields);
 	}
 
+	@ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+	ResponseEntity<ApiError> unsupportedMediaType(HttpMediaTypeNotSupportedException ex) {
+		log.warn("Desteklenmeyen içerik türü: {}", ex.getContentType());
+		return respond(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "UNSUPPORTED_MEDIA_TYPE",
+				"Desteklenmeyen içerik türü. Sayfayı yenileyip tekrar deneyin.", List.of(), List.of());
+	}
+
+	@ExceptionHandler({ MultipartException.class, MissingRequestHeaderException.class })
+	ResponseEntity<ApiError> unreadableRequest(Exception ex) {
+		log.warn("İstek okunamadı: {}", ex.toString());
+		return simple(CommonErrorCode.REQUEST_UNREADABLE);
+	}
+
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	ResponseEntity<ApiError> unreadable(HttpMessageNotReadableException ex) {
 		log.debug("İstek gövdesi okunamadı", ex);
@@ -108,6 +152,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MissingServletRequestPartException.class)
 	ResponseEntity<ApiError> missingPart() {
+		log.warn("İstekte dosya bölümü eksik");
 		return simple(CommonErrorCode.FILE_MISSING);
 	}
 
@@ -138,16 +183,21 @@ public class GlobalExceptionHandler {
 							List.of(new ApiError.FieldError(entry.getValue().field(), message)), List.of());
 				}
 			}
+			return simple(CommonErrorCode.DUPLICATE_RECORD);
 		}
-		return simple(CommonErrorCode.DUPLICATE_RECORD);
+		return unexpected(ex);
 	}
 
-	@ExceptionHandler({ NoResourceFoundException.class, HttpRequestMethodNotSupportedException.class })
-	ResponseEntity<ApiError> routeNotFound(Exception ex) {
-		HttpStatus status = ex instanceof HttpRequestMethodNotSupportedException ? HttpStatus.METHOD_NOT_ALLOWED
-				: HttpStatus.NOT_FOUND;
-		return respond(status, CommonErrorCode.ROUTE_NOT_FOUND.name(), CommonErrorCode.ROUTE_NOT_FOUND.message(),
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	ResponseEntity<ApiError> methodNotAllowed() {
+		return respond(HttpStatus.METHOD_NOT_ALLOWED, "METHOD_NOT_ALLOWED", "Bu işlem bu adres için desteklenmiyor.",
 				List.of(), List.of());
+	}
+
+	@ExceptionHandler(NoResourceFoundException.class)
+	ResponseEntity<ApiError> routeNotFound() {
+		return respond(HttpStatus.NOT_FOUND, CommonErrorCode.ROUTE_NOT_FOUND.name(),
+				CommonErrorCode.ROUTE_NOT_FOUND.message(), List.of(), List.of());
 	}
 
 	@ExceptionHandler({ CannotGetJdbcConnectionException.class, DataAccessResourceFailureException.class })

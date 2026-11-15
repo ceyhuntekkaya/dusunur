@@ -107,7 +107,11 @@ public class PrintController {
 	@GetMapping("/api/print/requests/{id}/file")
 	public ResponseEntity<Resource> file(UserContext me, @PathVariable long id,
 			@RequestParam(defaultValue = "false") boolean download) {
-		return files.serve(service.file(me, id), !download);
+		ResponseEntity<Resource> served = files.serve(service.file(me, id), !download);
+		return ResponseEntity.status(served.getStatusCode()).headers(h -> {
+			h.putAll(served.getHeaders());
+			h.set(HttpHeaders.CACHE_CONTROL, "no-store");
+		}).body(served.getBody());
 	}
 
 	@GetMapping("/api/print/files/{fileId}/page-count")

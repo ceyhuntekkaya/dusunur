@@ -9,10 +9,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import tr.okul.iletisim.calendar.CalendarAccess.Visible;
 import tr.okul.iletisim.calendar.CalendarDtos.EntryDto;
@@ -24,12 +29,14 @@ import tr.okul.iletisim.common.file.FilePurpose;
 import tr.okul.iletisim.common.file.FileStorageService;
 import tr.okul.iletisim.common.file.StoredFile;
 import tr.okul.iletisim.common.file.StoredFileRepository;
+import tr.okul.iletisim.common.notify.RealtimePublisher;
 import tr.okul.iletisim.common.security.UserContext;
 import tr.okul.iletisim.common.util.TextNormalizer;
 
 @Service
 public class CalendarEntryService {
 
+	private static final Logger log = LoggerFactory.getLogger(CalendarEntryService.class);
 	private static final Locale TR = Locale.forLanguageTag("tr");
 	private static final DateTimeFormatter DAY = DateTimeFormatter.ofPattern("d MMM", TR);
 	private static final DateTimeFormatter DAY_NAME = DateTimeFormatter.ofPattern("d MMM EEE", TR);
@@ -49,9 +56,11 @@ public class CalendarEntryService {
 	private final StoredFileRepository storedFiles;
 	private final AuditService audit;
 	private final JdbcClient jdbc;
+	private final PlatformTransactionManager txManager;
 
 	public CalendarEntryService(CalEntryRepository entries, CalendarAccess access, CalendarQueries queries,
-			FileStorageService storage, StoredFileRepository storedFiles, AuditService audit, JdbcClient jdbc) {
+			FileStorageService storage, StoredFileRepository storedFiles, AuditService audit, JdbcClient jdbc,
+			PlatformTransactionManager txManager) {
 		this.entries = entries;
 		this.access = access;
 		this.queries = queries;
@@ -59,6 +68,7 @@ public class CalendarEntryService {
 		this.storedFiles = storedFiles;
 		this.audit = audit;
 		this.jdbc = jdbc;
+		this.txManager = txManager;
 	}
 
 	@Transactional(readOnly = true)
@@ -188,7 +198,17 @@ public class CalendarEntryService {
 
 	private void deleteFile(UUID fileId) {
 		if (fileId != null) {
-			storedFiles.findById(fileId).ifPresent(storage::delete);
+			RealtimePublisher.afterCommit(() -> {
+				TransactionTemplate tx = new TransactionTemplate(txManager);
+				tx.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+				try {
+					tx.executeWithoutResult(st -> storedFiles.findById(fileId).filter(f -> f.getDeletedAt() == null)
+							.ifPresent(storage::delete));
+				}
+				catch (RuntimeException ex) {
+					log.warn("Takvim dosyası silinemedi: {}", fileId, ex);
+				}
+			});
 		}
 	}
 

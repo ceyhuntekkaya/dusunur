@@ -84,7 +84,7 @@ export const delegationSchema = z
     const today = startOfDay(new Date());
     if (start < today) {
       ctx.addIssue({ code: "custom", path: ["startDate"], message: DATES_MESSAGE });
-    } else if (end < start || differenceInCalendarDays(end, start) > 90 || end > addDays(start, 90)) {
+    } else if (end < start || differenceInCalendarDays(end, start) > 89 || end > addDays(start, 89)) {
       ctx.addIssue({ code: "custom", path: ["endDate"], message: DATES_MESSAGE });
     }
   });

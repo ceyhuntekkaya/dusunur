@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut, Settings, User } from "lucide-react";
+import { ChevronDown, LogOut, Settings, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,29 +16,24 @@ import { adminItem } from "@/components/layout/nav-items";
 
 type Props = {
   me: MeResponse;
-  variant: "card" | "avatar";
-  side?: "top" | "bottom";
+  variant: "nav" | "avatar";
 };
 
-export function UserMenu({ me, variant, side = "bottom" }: Props) {
+export function UserMenu({ me, variant }: Props) {
   const { signOut } = useSignOut();
   const admin = adminItem(me);
 
   return (
     <DropdownMenu>
-      {variant === "card" ? (
+      {variant === "nav" ? (
         <DropdownMenuTrigger
-          className="flex min-h-14 w-full items-center gap-3 rounded-lg p-2 text-left outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="relative flex h-full w-[72px] flex-col items-center justify-center gap-0.5 border-b-2 border-transparent text-[12px] text-muted-foreground outline-none hover:text-foreground focus-visible:bg-muted aria-expanded:border-foreground aria-expanded:text-foreground"
           aria-label="Hesap menüsü"
         >
-          <UserAvatar userId={me.id} name={me.fullName} />
-          <span className="hidden min-w-0 flex-1 lg:block">
-            <span className="block truncate text-sm font-medium">{me.fullName}</span>
-            {me.membership?.title && (
-              <span className="block truncate text-[13px] text-muted-foreground">
-                {me.membership.title}
-              </span>
-            )}
+          <UserAvatar userId={me.id} name={me.fullName} size="sm" />
+          <span className="inline-flex items-center leading-4">
+            Ben
+            <ChevronDown className="size-3.5" aria-hidden />
           </span>
         </DropdownMenuTrigger>
       ) : (
@@ -49,17 +44,27 @@ export function UserMenu({ me, variant, side = "bottom" }: Props) {
           <UserAvatar userId={me.id} name={me.fullName} />
         </DropdownMenuTrigger>
       )}
-      <DropdownMenuContent align={variant === "card" ? "start" : "end"} side={side} className="w-52">
+      <DropdownMenuContent align={variant === "nav" ? "end" : "start"} className="w-64">
+        <div className="flex items-center gap-3 px-2 py-2">
+          <UserAvatar userId={me.id} name={me.fullName} size="lg" />
+          <div className="min-w-0">
+            <p className="truncate text-[15px] font-semibold">{me.fullName}</p>
+            {me.membership?.title && (
+              <p className="truncate text-[13px] text-muted-foreground">{me.membership.title}</p>
+            )}
+          </div>
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="min-h-11 gap-2" render={<Link href="/profil" />}>
+          <User className="size-4" aria-hidden />
+          Profilim
+        </DropdownMenuItem>
         {admin && variant === "avatar" && (
           <DropdownMenuItem className="min-h-11 gap-2" render={<Link href={admin.href} />}>
             <Settings className="size-4" aria-hidden />
             Yönetim
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem className="min-h-11 gap-2" render={<Link href="/profil" />}>
-          <User className="size-4" aria-hidden />
-          Profilim
-        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="min-h-11 gap-2" onClick={signOut}>
           <LogOut className="size-4" aria-hidden />

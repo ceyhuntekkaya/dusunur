@@ -4,14 +4,14 @@ import { ApiError } from "@/lib/api";
 
 type Props = {
   error?: unknown;
+  message?: string;
   onRetry?: () => void;
 };
 
-export function ErrorState({ error, onRetry }: Props) {
+export function ErrorState({ error, message: custom, onRetry }: Props) {
   const message =
-    error instanceof ApiError
-      ? error.message
-      : "Bilgiler yüklenemedi. Lütfen tekrar deneyin.";
+    custom ??
+    (error instanceof ApiError ? error.message : "Bilgiler yüklenemedi. Lütfen tekrar deneyin.");
   return (
     <div className="flex flex-col items-center justify-center gap-3 px-4 py-12 text-center" role="alert">
       <div className="flex size-12 items-center justify-center rounded-full bg-destructive/10 text-destructive">

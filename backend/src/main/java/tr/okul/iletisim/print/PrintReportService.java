@@ -44,7 +44,7 @@ public class PrintReportService {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Ad Soyad;Şube;Talep Sayısı;Siyah-Beyaz Sayfa;Renkli Sayfa;Toplam Sayfa\r\n");
 		for (ReportRow r : report.rows()) {
-			sb.append(Csv.escape(r.fullName(), ';')).append(';').append(Csv.escape(r.branchName(), ';')).append(';')
+			sb.append(Csv.escape(safe(r.fullName()), ';')).append(';').append(Csv.escape(safe(r.branchName()), ';')).append(';')
 					.append(r.requestCount()).append(';').append(r.bwPages()).append(';').append(r.colorPages())
 					.append(';').append(r.totalPages()).append("\r\n");
 		}
@@ -55,6 +55,13 @@ public class PrintReportService {
 		out.writeBytes(new byte[] { (byte) 0xEF, (byte) 0xBB, (byte) 0xBF });
 		out.writeBytes(sb.toString().getBytes(StandardCharsets.UTF_8));
 		return out.toByteArray();
+	}
+
+	private static String safe(String v) {
+		if (v != null && !v.isEmpty() && "=+-@\t\r".indexOf(v.charAt(0)) >= 0) {
+			return "'" + v;
+		}
+		return v;
 	}
 
 }

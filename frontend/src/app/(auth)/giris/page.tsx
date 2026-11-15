@@ -15,6 +15,7 @@ import type { MeResponse } from "@/features/core/types";
 import { ApiError } from "@/lib/api";
 import { useApiForm } from "@/lib/form";
 import { useMe } from "@/lib/me";
+import { safeInternalPath } from "@/lib/safe-redirect";
 
 const schema = z.object({
   email: z.string().trim().min(1, "E-posta adresinizi girin."),
@@ -42,7 +43,8 @@ export default function LoginPage() {
   const next = params.get("next");
 
   function destination(user: MeResponse) {
-    if (next && next.startsWith("/") && !next.startsWith("//")) return next;
+    const safe = safeInternalPath(next);
+    if (safe) return safe;
     return user.permissions.member ? "/akis" : "/yonetim/personel";
   }
 

@@ -29,17 +29,22 @@ public class PrintJobs {
 	@Scheduled(cron = "0 0 4 * * *", zone = "Europe/Istanbul")
 	public void purgeFiles() {
 		OffsetDateTime cutoff = OffsetDateTime.now(ZoneOffset.UTC).minusDays(app.print().fileRetentionDays());
-		List<Long> ids = queries.purgeCandidates(cutoff, 500);
 		int purged = 0;
-		for (Long id : ids) {
-			try {
-				service.purgeFile(id);
-				purged++;
+		long lastId = 0;
+		List<Long> ids;
+		do {
+			ids = queries.purgeCandidates(cutoff, lastId, 500);
+			for (Long id : ids) {
+				lastId = id;
+				try {
+					service.purgeFile(id);
+					purged++;
+				}
+				catch (RuntimeException e) {
+					log.warn("Fotokopi talebi dosyası silinemedi: talep {}", id, e);
+				}
 			}
-			catch (RuntimeException e) {
-				log.warn("Fotokopi talebi dosyası silinemedi: talep {}", id, e);
-			}
-		}
+		} while (!ids.isEmpty());
 		log.info("Fotokopi dosya temizliği: {} dosya silindi.", purged);
 	}
 

@@ -232,6 +232,9 @@ public class FeedService {
 		for (UUID fileId : queries.attachmentFileIds(id)) {
 			fileRepository.findById(fileId).filter(f -> f.getDeletedAt() == null).ifPresent(files::delete);
 		}
+		if (ref.important()) {
+			realtime.toUsers(queries.recipients(ref), "BADGES", Map.of());
+		}
 		if (!author) {
 			audit.log(me.userId(), FeedAuditAction.FEED_POST_DELETED, "FEED_POST", id,
 					Map.of("authorId", ref.authorId(), "snippet", FeedText.snippet(ref.content(), 120)));

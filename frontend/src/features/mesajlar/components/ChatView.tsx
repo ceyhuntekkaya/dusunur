@@ -299,7 +299,7 @@ export function ChatView({ id }: { id: number }) {
   }
 
   const root =
-    "fixed inset-0 z-40 flex flex-col bg-background md:left-[72px] lg:static lg:z-auto lg:min-h-0 lg:flex-1";
+    "fixed inset-0 z-40 flex flex-col bg-background lg:static lg:z-auto lg:min-h-0 lg:flex-1";
 
   if (detailQ.isError) {
     const err = detailQ.error;
@@ -338,6 +338,9 @@ export function ChatView({ id }: { id: number }) {
         <div
           ref={scroller}
           onScroll={onScroll}
+          onLoadCapture={() => {
+            if (atBottomRef.current) scrollToBottom();
+          }}
           className="h-full overflow-y-auto overscroll-contain px-3 py-3"
           aria-busy={messagesQ.isPending}
         >

@@ -32,6 +32,14 @@ export default function NewPrintRequestPage() {
       ) : (
         <ErrorState error={source.error} onRetry={() => void source.refetch()} />
       );
+  } else if (copyId > 0 && !source.data?.actions.canCopy) {
+    body = (
+      <EmptyState
+        icon={SearchX}
+        message="Bu talep kopyalanamaz."
+        action={{ label: "Fotokopi'ye dön", href: "/fotokopi" }}
+      />
+    );
   } else {
     body = (
       <div className="md:rounded-xl md:border md:bg-card md:p-6">

@@ -208,8 +208,11 @@ public class DmsQueries {
 				new DmsPerson(f.uploadedBy(), f.uploadedByName()), f.createdAt());
 	}
 
+	private static final java.util.Set<String> PREVIEWABLE = java.util.Set.of("image/jpeg", "image/png", "image/gif",
+			"image/webp", "application/pdf");
+
 	public static boolean isPreviewable(String contentType) {
-		return contentType != null && (contentType.equals("application/pdf") || contentType.startsWith("image/"));
+		return contentType != null && PREVIEWABLE.contains(contentType);
 	}
 
 	public List<FolderNode> folderNodes(long spaceId) {
@@ -275,6 +278,28 @@ public class DmsQueries {
 			result.add(new SearchResult("FOLDER", f.id(), f.name(), f.spaceId(), f.spaceName(), f.containerId(),
 					path(f.spaceName(), nodes, f.containerId()), null, null));
 		}
+		for (SearchDb f : files) {
+			Map<Long, PathNode> nodes = cache.computeIfAbsent(f.spaceId(), this::pathNodes);
+			result.add(new SearchResult("FILE", f.id(), f.name(), f.spaceId(), f.spaceName(), f.containerId(),
+					path(f.spaceName(), nodes, f.containerId()), f.sizeBytes(), f.contentType()));
+		}
+		return result;
+	}
+
+	public List<SearchResult> recentFiles(UserContext me, int limit) {
+		Collection<Long> ids = access.accessibleSpaceLevels(me).keySet();
+		if (ids.isEmpty()) {
+			return List.of();
+		}
+		List<SearchDb> files = jdbc.sql("""
+				SELECT f.id, f.name, f.space_id, s.name AS space_name, f.folder_id AS container_id,
+				       f.size_bytes, f.content_type
+				FROM dms_file f JOIN dms_space s ON s.id = f.space_id
+				WHERE f.deleted_at IS NULL AND f.space_id IN (:ids)
+				ORDER BY f.created_at DESC, f.id DESC LIMIT :lim
+				""").param("ids", ids).param("lim", limit).query(SearchDb.class).list();
+		Map<Long, Map<Long, PathNode>> cache = new HashMap<>();
+		List<SearchResult> result = new ArrayList<>();
 		for (SearchDb f : files) {
 			Map<Long, PathNode> nodes = cache.computeIfAbsent(f.spaceId(), this::pathNodes);
 			result.add(new SearchResult("FILE", f.id(), f.name(), f.spaceId(), f.spaceName(), f.containerId(),

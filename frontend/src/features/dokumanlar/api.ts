@@ -206,6 +206,10 @@ export function useDmsSearch(q: string) {
   });
 }
 
+export function useRecentFiles() {
+  return useQuery({ queryKey: ["dms", "recent"], queryFn: () => api<SearchResult[]>("/api/dms/recent") });
+}
+
 export function useLocateFile(fileId: number) {
   return useQuery({
     queryKey: ["dms", "locate", fileId],

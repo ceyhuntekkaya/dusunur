@@ -9,9 +9,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import tr.okul.iletisim.chat.ChatDtos.MessageDto;
 import tr.okul.iletisim.chat.ChatDtos.SendMessageRequest;
@@ -41,10 +44,12 @@ public class ChatMessageService {
 	private final NotificationService notifications;
 	private final RealtimePublisher realtime;
 	private final JdbcClient jdbc;
+	private final TransactionTemplate tx;
 
 	public ChatMessageService(ChatMessageRepository messages, ChatMessageAttachmentRepository attachmentRepository,
 			ChatQueries queries, FileStorageService files, StoredFileRepository fileRepository,
-			NotificationService notifications, RealtimePublisher realtime, JdbcClient jdbc) {
+			NotificationService notifications, RealtimePublisher realtime, JdbcClient jdbc,
+			PlatformTransactionManager txManager) {
 		this.messages = messages;
 		this.attachmentRepository = attachmentRepository;
 		this.queries = queries;
@@ -53,6 +58,7 @@ public class ChatMessageService {
 		this.notifications = notifications;
 		this.realtime = realtime;
 		this.jdbc = jdbc;
+		this.tx = new TransactionTemplate(txManager);
 	}
 
 	@Transactional(readOnly = true)
@@ -72,11 +78,40 @@ public class ChatMessageService {
 		return files.get(fileId);
 	}
 
-	@Transactional
 	public SendResult send(UserContext me, long conversationId, SendMessageRequest request) {
+		try {
+			return tx.execute(status -> doSend(me, conversationId, request));
+		}
+		catch (DataIntegrityViolationException e) {
+			if (!rootMessage(e).contains("ux_chat_message_client")) {
+				throw e;
+			}
+			long seasonId = me.requireMember();
+			SendResult existing = tx.execute(status -> messages
+					.findByConversationIdAndSenderIdAndClientId(conversationId, me.userId(), request.clientId())
+					.map(m -> new SendResult(queries.message(m.getId(), me.userId(), seasonId), false)).orElse(null));
+			if (existing == null) {
+				throw e;
+			}
+			return existing;
+		}
+	}
+
+	private static String rootMessage(Throwable ex) {
+		StringBuilder sb = new StringBuilder();
+		for (Throwable t = ex; t != null; t = t.getCause()) {
+			if (t.getMessage() != null) {
+				sb.append(t.getMessage()).append(' ');
+			}
+		}
+		return sb.toString();
+	}
+
+	private SendResult doSend(UserContext me, long conversationId, SendMessageRequest request) {
 		long seasonId = me.requireMember();
 		ConvRef ref = queries.requireAccess(conversationId, me.userId());
-		ChatMessage existing = messages.findBySenderIdAndClientId(me.userId(), request.clientId()).orElse(null);
+		ChatMessage existing = messages
+				.findByConversationIdAndSenderIdAndClientId(conversationId, me.userId(), request.clientId()).orElse(null);
 		if (existing != null) {
 			return new SendResult(queries.message(existing.getId(), me.userId(), seasonId), false);
 		}
@@ -118,7 +153,10 @@ public class ChatMessageService {
 		}
 		attachmentRepository.saveAllAndFlush(rows);
 
-		jdbc.sql("UPDATE chat_conversation SET last_message_id = :mid, last_message_at = now() WHERE id = :cid")
+		jdbc.sql("""
+				UPDATE chat_conversation SET last_message_id = :mid, last_message_at = now()
+				WHERE id = :cid AND (last_message_id IS NULL OR last_message_id < :mid)
+				""")
 				.param("mid", messageId).param("cid", conversationId).update();
 
 		MessageDto dto = queries.message(messageId, me.userId(), seasonId);
@@ -164,8 +202,10 @@ public class ChatMessageService {
 		}
 		attachmentRepository.deleteByMessageId(messageId);
 		attachmentRepository.flush();
-		realtime.toUsers(queries.memberIds(ref.conversationId()), "CHAT_MESSAGE_DELETED",
+		List<Long> members = queries.memberIds(ref.conversationId());
+		realtime.toUsers(members, "CHAT_MESSAGE_DELETED",
 				Map.of("conversationId", ref.conversationId(), "messageId", messageId));
+		realtime.toUsers(members.stream().filter(u -> u != me.userId()).toList(), "BADGES", Map.of());
 	}
 
 	@Transactional

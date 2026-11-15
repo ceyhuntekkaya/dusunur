@@ -23,6 +23,17 @@ export function fetchEntries(from: string, to: string, calendarIds: number[]) {
   return api<EntryDto[]>(`/api/calendar/entries?${params.toString()}`);
 }
 
+export function useUpcomingEntries(days = 7) {
+  const hour = new Date();
+  hour.setMinutes(0, 0, 0);
+  const from = hour.toISOString();
+  const to = new Date(hour.getTime() + days * 86_400_000).toISOString();
+  return useQuery({
+    queryKey: ["calendar", "upcoming", from, to],
+    queryFn: () => api<EntryDto[]>(`/api/calendar/entries?${new URLSearchParams({ from, to }).toString()}`),
+  });
+}
+
 function useRefreshCalendars() {
   const qc = useQueryClient();
   return () => void qc.invalidateQueries({ queryKey: ["calendar", "calendars"] });
@@ -104,7 +115,9 @@ export function useDeleteShare(calendarId: number) {
 }
 
 export function useSaveEntry() {
+  const qc = useQueryClient();
   return useMutation({
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ["calendar"] }),
     mutationFn: (v: { id?: number; input: EntryInput }) =>
       v.id === undefined
         ? api<EntryDto>("/api/calendar/entries", { method: "POST", json: v.input })
@@ -113,7 +126,9 @@ export function useSaveEntry() {
 }
 
 export function useDeleteEntry() {
+  const qc = useQueryClient();
   return useMutation({
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ["calendar"] }),
     mutationFn: (id: number) => api<void>(`/api/calendar/entries/${id}`, { method: "DELETE" }),
   });
 }

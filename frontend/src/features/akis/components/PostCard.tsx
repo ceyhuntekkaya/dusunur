@@ -193,11 +193,11 @@ export function PostCard({ post, expanded = false, onDeleted }: Props) {
         <div className="flex items-start gap-3">
           <UserAvatar userId={post.author.id} name={post.author.fullName} size="md" />
           <div className="min-w-0 flex-1">
-            <p className="text-[15px]">
+            <p className="text-[15px] leading-5">
               <span className="font-semibold">{post.author.fullName}</span>
               {post.author.former && <span className="text-xs text-muted-foreground"> (Eski personel)</span>}
-              {meta && <span className="ml-1.5 text-xs text-muted-foreground">{meta}</span>}
             </p>
+            {meta && <p className="truncate text-xs leading-4 text-muted-foreground">{meta}</p>}
             <div className="flex flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground">
               <DateText value={post.createdAt} />
               {post.editedAt && <span>· düzenlendi</span>}
@@ -251,17 +251,17 @@ export function PostCard({ post, expanded = false, onDeleted }: Props) {
       )}
 
       {writable && (
-        <div className="mx-4 mt-2 flex gap-1 border-t py-1">
+        <div className="mx-3 mt-2 flex gap-1 border-t py-1">
           <Button
             variant="ghost"
-            className={cn("h-10 flex-1", post.liked && "text-primary")}
+            className={cn("h-11 flex-1 rounded-lg text-muted-foreground md:h-10", post.liked && "text-primary")}
             aria-pressed={post.liked}
             onClick={() => like.mutate({ post, like: !post.liked })}
           >
             <ThumbsUp className={cn(post.liked && "fill-current")} aria-hidden />
             Beğen
           </Button>
-          <Button variant="ghost" className="h-10 flex-1" onClick={() => setCommentOpen(true)}>
+          <Button variant="ghost" className="h-11 flex-1 rounded-lg text-muted-foreground md:h-10" onClick={() => setCommentOpen(true)}>
             <MessageSquare aria-hidden />
             Yorum Yap
           </Button>
@@ -310,7 +310,7 @@ export function PostCard({ post, expanded = false, onDeleted }: Props) {
           onDeleted?.();
         }}
       />
-      {showReadStats && <ReadStatusDialog postId={post.id} open={readStatus} onOpenChange={setReadStatus} />}
+      {showReadStats && <ReadStatusDialog postId={post.id} archived={post.archived} open={readStatus} onOpenChange={setReadStatus} />}
     </article>
   );
 }

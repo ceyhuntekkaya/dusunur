@@ -35,6 +35,7 @@ function handleError(error: unknown, silent: boolean) {
     if (error.code === "UNAUTHENTICATED") {
       params.set("next", window.location.pathname + window.location.search);
     }
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
     window.location.assign(`/giris?${params.toString()}`);
     return;
   }

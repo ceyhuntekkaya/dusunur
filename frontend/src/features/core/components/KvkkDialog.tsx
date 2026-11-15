@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,6 @@ import { SimpleMarkdown } from "@/components/common/SimpleMarkdown";
 import { useAcceptKvkk, useKvkk, useSignOut } from "@/features/core/api";
 
 export function KvkkDialog() {
-  const queryClient = useQueryClient();
   const kvkk = useKvkk(true);
   const accept = useAcceptKvkk();
   const { signOut, pending: signingOut } = useSignOut();
@@ -24,7 +22,6 @@ export function KvkkDialog() {
     accept.mutate(undefined, {
       onSuccess: () => {
         toast.success("Aydınlatma metni onaylandı.");
-        void queryClient.invalidateQueries({ queryKey: ["me"] });
       },
     });
   }

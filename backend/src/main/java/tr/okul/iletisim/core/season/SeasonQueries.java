@@ -119,6 +119,26 @@ public class SeasonQueries {
 				""").param("sid", seasonId).query(Integer.class).single();
 	}
 
+	public int managerCount(long seasonId) {
+		return jdbc.sql("""
+				SELECT count(*) FROM season_membership m JOIN app_user u ON u.id = m.user_id
+				WHERE m.season_id = :sid AND u.status = 'ACTIVE' AND m.is_manager
+				""").param("sid", seasonId).query(Integer.class).single();
+	}
+
+	public List<String> branchesWithoutPrintOperator(long seasonId) {
+		return jdbc.sql("""
+				SELECT b.name FROM branch b
+				WHERE b.active
+				  AND EXISTS (SELECT 1 FROM season_membership m JOIN app_user u ON u.id = m.user_id
+				              WHERE m.season_id = :sid AND m.branch_id = b.id AND u.status = 'ACTIVE')
+				  AND NOT EXISTS (SELECT 1 FROM season_membership m JOIN app_user u ON u.id = m.user_id
+				                  WHERE m.season_id = :sid AND m.branch_id = b.id AND u.status = 'ACTIVE'
+				                    AND m.is_print_operator)
+				ORDER BY b.name
+				""").param("sid", seasonId).query(String.class).list();
+	}
+
 	public int droppedMemberCount(long oldSeasonId, long newSeasonId) {
 		return jdbc.sql("""
 				SELECT count(*) FROM season_membership m JOIN app_user u ON u.id = m.user_id

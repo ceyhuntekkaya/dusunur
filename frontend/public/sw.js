@@ -15,22 +15,25 @@ self.addEventListener("push", (event) => {
   }
   const title = data.title || "İletişim";
   event.waitUntil(
-    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
-      if (windows.some((w) => w.focused)) return;
-      return self.registration.showNotification(title, {
-        body: data.body || "",
-        tag: data.tag || undefined,
-        data: { link: data.link || "/akis" },
-        icon: "/icons/icon-192.png",
-        badge: "/icons/badge-72.png",
-      });
+    self.registration.showNotification(title, {
+      body: data.body || "",
+      tag: data.tag || undefined,
+      data: { link: data.link || "/akis" },
+      icon: "/icons/icon-192.png",
+      badge: "/icons/badge-72.png",
     }),
   );
 });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const link = (event.notification.data && event.notification.data.link) || "/akis";
+  const raw = (event.notification.data && event.notification.data.link) || "";
+  let link = "/akis";
+  if (raw.startsWith("/") && !raw.includes("\\") && !/[\x00-\x1f]/.test(raw)) {
+    try {
+      if (new URL(raw, self.location.origin).origin === self.location.origin) link = raw;
+    } catch {}
+  }
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
       const open = windows[0];

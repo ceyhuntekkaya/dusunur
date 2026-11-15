@@ -85,9 +85,8 @@ public class AuthService {
 		this.dummyHash = encoder.encode("dummy-password-for-timing");
 	}
 
-	@Transactional
 	public MeResponse login(LoginRequest req, HttpServletRequest request, HttpServletResponse response) {
-		String email = req.email().trim().toLowerCase(Locale.ROOT);
+		String email = normalizeEmail(req.email());
 		AppUser user = users.findByEmail(email).orElse(null);
 		OffsetDateTime now = OffsetDateTime.now();
 
@@ -189,7 +188,7 @@ public class AuthService {
 
 	@Transactional
 	public MessageResponse forgotPassword(ForgotPasswordRequest req) {
-		String email = req.email().trim().toLowerCase(Locale.ROOT);
+		String email = normalizeEmail(req.email());
 		AppUser user = users.findByEmail(email).orElse(null);
 		if (user != null && user.getStatus() == UserStatus.ACTIVE) {
 			long recent = tokens.countByUserIdAndPurposeAndCreatedAtAfter(user.getId(), TokenPurpose.RESET,
@@ -223,6 +222,10 @@ public class AuthService {
 		sessions.invalidateAll(user.getId(), null);
 		audit.log(user.getId(), CoreAuditAction.AUTH_PASSWORD_SET, "USER", user.getId(),
 				Map.of("purpose", t.getPurpose().name()));
+	}
+
+	private static String normalizeEmail(String raw) {
+		return raw.replaceAll("[\\p{Cc}\\p{Cf}]", "").trim().toLowerCase(Locale.ROOT);
 	}
 
 	private AuthToken validToken(String raw) {

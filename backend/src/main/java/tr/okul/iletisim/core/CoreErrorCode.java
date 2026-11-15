@@ -62,6 +62,7 @@ public enum CoreErrorCode implements ErrorCode {
 	SEASON_MEMBER_IS_APPROVER(HttpStatus.CONFLICT, "Bu kişi bu yıl {0} personelin fotokopi onaylayıcısı. Önce onların onaylayıcısını değiştirin."),
 	SEASON_MEMBER_REMOVAL_BLOCKED(HttpStatus.CONFLICT, "Seçilen personel yıldan çıkarılamıyor."),
 	SEASON_COPY_BRANCH_INACTIVE(HttpStatus.BAD_REQUEST, "Bazı personelin önceki yıldaki şubesi pasif. Önce şubeyi aktifleştirin veya bu kişileri seçimden çıkarın."),
+	SEASON_COPY_SAME(HttpStatus.BAD_REQUEST, "Kaynak yıl ile hedef yıl aynı olamaz."),
 	GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "Grup bulunamadı."),
 	GROUP_MANAGE_FORBIDDEN(HttpStatus.FORBIDDEN, "Grupları yalnızca yöneticiler düzenleyebilir."),
 	GROUP_NAME_TAKEN(HttpStatus.CONFLICT, "Bu adla kayıtlı bir grup var."),

@@ -12,7 +12,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
@@ -39,6 +38,9 @@ public class FileStorageService {
 	private static final Logger log = LoggerFactory.getLogger(FileStorageService.class);
 
 	private static final Set<String> IMAGE = Set.of("jpg", "jpeg", "png", "webp", "gif");
+	private static final Set<String> IMAGE_TYPES = Set.of("image/jpeg", "image/png", "image/webp", "image/gif");
+	private static final Map<String, String> IMAGE_EXT_TYPES = Map.of("jpg", "image/jpeg", "jpeg", "image/jpeg",
+			"png", "image/png", "webp", "image/webp", "gif", "image/gif");
 	private static final Set<String> VIDEO = Set.of("mp4", "mov", "webm");
 	private static final Set<String> OFFICE = Set.of("doc", "docx", "xls", "xlsx", "ppt", "pptx", "odt", "ods", "odp");
 	private static final Set<String> TYPE_CHECK_SKIPPED = Set.of("txt", "csv", "rtf", "rar", "7z", "mp3");
@@ -168,16 +170,19 @@ public class FileStorageService {
 			throw new BusinessException(CommonErrorCode.FILE_NOT_FOUND);
 		}
 		String type = file.getContentType();
-		boolean previewable = type.startsWith("image/") || type.startsWith("video/") || type.equals("application/pdf");
+		boolean previewable = (type.startsWith("image/") && !type.equals("image/svg+xml")) || type.startsWith("video/") || type.equals("application/pdf");
 		ContentDisposition disposition = (inline && previewable ? ContentDisposition.inline()
 				: ContentDisposition.attachment()).filename(file.getOriginalName(), java.nio.charset.StandardCharsets.UTF_8)
 				.build();
-		return ResponseEntity.ok()
+		ResponseEntity.BodyBuilder response = ResponseEntity.ok()
 				.contentType(MediaType.parseMediaType(type))
 				.header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
 				.header("X-Content-Type-Options", "nosniff")
-				.cacheControl(CacheControl.maxAge(300, TimeUnit.SECONDS).cachePrivate())
-				.body(new FileSystemResource(path));
+				.cacheControl(CacheControl.noCache().cachePrivate());
+		if (!type.equals("application/pdf")) {
+			response.header("Content-Security-Policy", "sandbox; default-src 'none'");
+		}
+		return response.body(new FileSystemResource(path));
 	}
 
 	@Transactional
@@ -203,9 +208,11 @@ public class FileStorageService {
 	private static String sanitizeName(String original) {
 		String n = original == null ? "" : original;
 		n = n.substring(Math.max(n.lastIndexOf('/'), n.lastIndexOf('\\')) + 1);
-		n = n.replaceAll("\\p{Cntrl}", "").trim();
+		n = n.replaceAll("[\\p{Cc}\\p{Cf}]", "").trim();
 		if (n.length() > 255) {
-			n = n.substring(0, 255);
+			int dot = n.lastIndexOf('.');
+			String tail = dot > 0 && n.length() - dot <= 20 ? n.substring(dot) : "";
+			n = (n.substring(0, 255 - tail.length()) + tail).trim();
 		}
 		return n.isEmpty() ? "dosya" : n;
 	}
@@ -244,7 +251,7 @@ public class FileStorageService {
 			return true;
 		}
 		if (IMAGE.contains(ext)) {
-			return detected.startsWith("image/");
+			return IMAGE_TYPES.contains(detected);
 		}
 		if (VIDEO.contains(ext)) {
 			return detected.startsWith("video/");
@@ -262,8 +269,9 @@ public class FileStorageService {
 	}
 
 	private static String resolveContentType(String ext, String detected) {
-		String type = detected.startsWith("image/") || detected.startsWith("video/") || detected.equals("application/pdf")
-				? detected : EXT_TYPES.getOrDefault(ext, detected);
+		String type = IMAGE.contains(ext) ? IMAGE_EXT_TYPES.get(ext)
+				: ext.equals("pdf") ? "application/pdf"
+				: detected.startsWith("video/") ? detected : EXT_TYPES.getOrDefault(ext, detected);
 		return type.length() > 150 ? "application/octet-stream" : type;
 	}
 

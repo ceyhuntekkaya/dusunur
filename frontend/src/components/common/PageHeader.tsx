@@ -28,7 +28,7 @@ export function PageHeader({ title, description, actions, primaryAction }: Props
     : {};
 
   return (
-    <div className="mb-4 flex flex-wrap items-start justify-between gap-3 md:mb-6">
+    <div className="mb-4 flex flex-wrap items-start justify-between gap-3 rounded-xl border bg-card px-4 py-3 md:px-5 md:py-4">
       <div className="min-w-0">
         <h1 className="text-xl font-semibold md:text-[22px] md:leading-7">{title}</h1>
         {description && <p className="mt-1 text-[13px] text-muted-foreground">{description}</p>}

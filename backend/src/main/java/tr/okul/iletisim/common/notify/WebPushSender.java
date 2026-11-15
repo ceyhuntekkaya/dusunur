@@ -6,6 +6,11 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import org.apache.http.HttpResponse;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
@@ -24,6 +29,8 @@ import tr.okul.iletisim.AppProperties;
 public class WebPushSender {
 
 	private static final Logger log = LoggerFactory.getLogger(WebPushSender.class);
+
+	private static final long SEND_TIMEOUT_SECONDS = 10;
 
 	private final AppProperties app;
 	private final PushSubscriptionRepository subscriptions;
@@ -72,8 +79,10 @@ public class WebPushSender {
 
 		List<PushSubscription> subs = subscriptions.findByUserIdIn(userIds);
 		for (PushSubscription s : subs) {
+			Future<HttpResponse> future = null;
 			try {
-				var response = pushService.send(new Notification(s.getEndpoint(), s.getP256dh(), s.getAuth(), bytes));
+				future = pushService.sendAsync(new Notification(s.getEndpoint(), s.getP256dh(), s.getAuth(), bytes));
+				HttpResponse response = future.get(SEND_TIMEOUT_SECONDS, TimeUnit.SECONDS);
 				int status = response.getStatusLine().getStatusCode();
 				if (status == 404 || status == 410) {
 					jdbc.sql("DELETE FROM push_subscription WHERE id = :id").param("id", s.getId()).update();
@@ -81,6 +90,10 @@ public class WebPushSender {
 				else if (status >= 300) {
 					log.warn("Web Push yanıtı beklenmedik: {} (abonelik {})", status, s.getId());
 				}
+			}
+			catch (TimeoutException e) {
+				future.cancel(true);
+				log.warn("Web Push zaman aşımına uğradı (abonelik {})", s.getId());
 			}
 			catch (Exception e) {
 				log.warn("Web Push gönderilemedi (abonelik {}): {}", s.getId(), e.toString());

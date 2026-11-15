@@ -9,7 +9,6 @@ import { PushPromptCard } from "@/components/common/PushPromptCard";
 import { ErrorState } from "@/components/common/ErrorState";
 import { PageSkeleton } from "@/components/common/Skeletons";
 import { BottomNav } from "@/components/layout/BottomNav";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { RealtimeBridge } from "@/features/core/components/RealtimeBridge";
 import { KvkkDialog } from "@/features/core/components/KvkkDialog";
@@ -52,18 +51,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-dvh">
-      <Sidebar me={user} />
-      <div className="md:pl-[72px] lg:pl-[248px]">
-        <ConnectionBanner />
-        <TopBar me={user} />
-        <main className="mx-auto max-w-[1200px] px-4 pt-4 pb-[calc(64px+env(safe-area-inset-bottom)+16px)] md:px-6 md:pt-2 md:pb-8">
+      <ConnectionBanner />
+      <TopBar me={user} />
+      <div>
+        <main className="mx-auto max-w-[1128px] px-4 pt-4 pb-[calc(64px+env(safe-area-inset-bottom)+16px)] md:px-6 md:pt-6 md:pb-6">
           {!user.kvkkRequired && (
             <>
               {pathname === "/akis" && <InstallCard />}
               <PushPromptCard />
             </>
           )}
-          <Suspense fallback={<PageSkeleton />}>{children}</Suspense>
+          {user.kvkkRequired ? <PageSkeleton /> : <Suspense fallback={<PageSkeleton />}>{children}</Suspense>}
         </main>
       </div>
       <BottomNav me={user} />

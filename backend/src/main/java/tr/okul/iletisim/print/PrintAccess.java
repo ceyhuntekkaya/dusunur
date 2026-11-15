@@ -39,7 +39,8 @@ public class PrintAccess {
 			return true;
 		}
 		return isOperator(me, r) && r.getStatus() != PrintStatus.PENDING_APPROVAL
-				&& r.getStatus() != PrintStatus.REJECTED;
+				&& r.getStatus() != PrintStatus.REJECTED
+				&& (r.getStatus() != PrintStatus.CANCELLED || r.getApproverId() == null || r.getDecidedBy() != null);
 	}
 
 	public boolean canAccessFile(UserContext me, PrintRequest r) {

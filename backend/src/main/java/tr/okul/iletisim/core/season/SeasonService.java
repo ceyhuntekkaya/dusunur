@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import tr.okul.iletisim.common.audit.AuditService;
 import tr.okul.iletisim.common.audit.CoreAuditAction;
 import tr.okul.iletisim.common.error.BusinessException;
-import tr.okul.iletisim.common.error.CommonErrorCode;
 import tr.okul.iletisim.common.security.UserContext;
 import tr.okul.iletisim.core.CoreErrorCode;
 import tr.okul.iletisim.core.branch.Branch;
@@ -270,7 +269,7 @@ public class SeasonService {
 	public CopyResponse copy(UserContext me, long seasonId, CopyRequest req) {
 		Season target = membershipService.findWritableSeason(seasonId);
 		if (req.sourceSeasonId() == seasonId) {
-			throw BusinessException.field(CommonErrorCode.VALIDATION_FAILED, "sourceSeasonId");
+			throw BusinessException.field(CoreErrorCode.SEASON_COPY_SAME, "sourceSeasonId");
 		}
 		membershipService.findSeason(req.sourceSeasonId());
 		Set<Long> wanted = new LinkedHashSet<>(req.userIds());
@@ -399,6 +398,12 @@ public class SeasonService {
 				items.add(old.getName() + " yılında olup " + s.getName() + " yılına atanmamış " + dropped
 						+ " personel artık giriş yapamayacak.");
 			}
+		}
+		if (queries.managerCount(s.getId()) == 0) {
+			items.add("Uyarı: Bu yılda hiç Yönetici yok; duyuru, grup ve rapor işlemlerini kimse yapamaz.");
+		}
+		for (String branch : queries.branchesWithoutPrintOperator(s.getId())) {
+			items.add("Uyarı: " + branch + " şubesinde Fotokopi Sorumlusu yok; bu şubenin talepleri kuyrukta kimse tarafından görülemez.");
 		}
 		int noApprover = queries.withoutApproverCount(s.getId());
 		if (noApprover > 0) {

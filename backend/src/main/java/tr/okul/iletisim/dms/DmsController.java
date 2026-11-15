@@ -193,6 +193,11 @@ public class DmsController {
 		return items.emptyTrash(me, id);
 	}
 
+	@GetMapping("/api/dms/recent")
+	public List<SearchResult> recent(UserContext me) {
+		return items.recentFiles(me);
+	}
+
 	@GetMapping("/api/dms/search")
 	public List<SearchResult> search(UserContext me, @RequestParam(required = false, defaultValue = "") String q) {
 		return items.search(me, q);

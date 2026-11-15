@@ -76,7 +76,7 @@ public class PrintRequestService {
 		OnLeave onLeave = null;
 		if (m.printApproverId() != null) {
 			long a = m.printApproverId();
-			PrintDelegation d = activeDelegation(a);
+			PrintDelegation d = activeDelegation(a, season);
 			if (d != null && d.getDelegateId() != me.userId()) {
 				Map<Long, PersonRef> refs = queries.persons(List.of(a, d.getDelegateId()), season);
 				myApprover = refs.get(d.getDelegateId());
@@ -126,7 +126,7 @@ public class PrintRequestService {
 			note0 = "Onaylayıcı tanımlı değil; otomatik onaylandı.";
 		}
 		else {
-			PrintDelegation d = activeDelegation(a);
+			PrintDelegation d = activeDelegation(a, seasonId);
 			if (d != null && d.getDelegateId() != me.userId()) {
 				approverId = d.getDelegateId();
 				originalApproverId = a;
@@ -167,7 +167,7 @@ public class PrintRequestService {
 	@Transactional
 	public PrintRequestDetail cancel(UserContext me, long id) {
 		me.requireMember();
-		PrintRequest r = load(id);
+		PrintRequest r = loadVisible(me, id);
 		if (!access.isOwner(me, r)) {
 			throw new BusinessException(PrintErrorCode.PRINT_CANCEL_NOT_ALLOWED);
 		}
@@ -336,6 +336,14 @@ public class PrintRequestService {
 				.orElseThrow(() -> new BusinessException(PrintErrorCode.PRINT_REQUEST_NOT_FOUND));
 	}
 
+	private PrintRequest loadVisible(UserContext me, long id) {
+		PrintRequest r = load(id);
+		if (!access.canView(me, r)) {
+			throw new BusinessException(PrintErrorCode.PRINT_REQUEST_NOT_FOUND);
+		}
+		return r;
+	}
+
 	private PrintRequest loadForDecision(UserContext me, long id) {
 		me.requireMember();
 		PrintRequest r = load(id);
@@ -349,7 +357,7 @@ public class PrintRequestService {
 
 	private PrintRequest loadForOperator(UserContext me, long id) {
 		me.requireMember();
-		PrintRequest r = load(id);
+		PrintRequest r = loadVisible(me, id);
 		if (!access.isOperator(me, r)) {
 			throw new BusinessException(PrintErrorCode.PRINT_OPERATOR_ONLY);
 		}
@@ -365,10 +373,10 @@ public class PrintRequestService {
 		throw new BusinessException(PrintErrorCode.PRINT_INVALID_STATUS, r.getStatus().label());
 	}
 
-	private PrintDelegation activeDelegation(long approverId) {
+	private PrintDelegation activeDelegation(long approverId, long seasonId) {
 		LocalDate today = LocalDate.now(PrintQueries.ISTANBUL);
 		return delegations.findFirstByApproverIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(approverId, today,
-				today).orElse(null);
+				today).filter(d -> queries.isActiveSeasonMember(seasonId, d.getDelegateId())).orElse(null);
 	}
 
 	private static OffsetDateTime now() {

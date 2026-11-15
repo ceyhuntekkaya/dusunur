@@ -87,7 +87,7 @@ export function ChatComposer({ replyTo, onCancelReply, onSend }: Props) {
           placeholder="Mesaj yazın…"
           aria-label="Mesaj"
           aria-invalid={!!error}
-          className="max-h-[120px] min-h-11 min-w-0 flex-1 resize-none py-2.5 text-[15px]"
+          className="max-h-[120px] min-h-11 min-w-0 flex-1 resize-none py-2.5 text-base md:text-[15px]"
           onChange={(e) => {
             setText(e.target.value);
             grow();

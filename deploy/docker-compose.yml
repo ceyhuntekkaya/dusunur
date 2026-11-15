@@ -13,6 +13,11 @@ services:
       timeout: 5s
       retries: 10
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
   backend:
     build: ../backend
     env_file: ../.env
@@ -27,6 +32,11 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
   frontend:
     build:
       context: ../frontend
@@ -34,6 +44,11 @@ services:
         NEXT_PUBLIC_INSTITUTION_NAME: ${APP_INSTITUTION_NAME}
         NEXT_PUBLIC_VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY}
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
   nginx:
     image: nginx:stable
     ports:
@@ -46,6 +61,11 @@ services:
       - backend
       - frontend
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
 volumes:
   pgdata:

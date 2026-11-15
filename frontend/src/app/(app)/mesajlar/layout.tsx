@@ -12,7 +12,7 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
   useChatRealtime(activeId);
 
   return (
-    <div className="lg:flex lg:h-[calc(100dvh-104px)] lg:overflow-hidden lg:rounded-xl lg:border lg:bg-card">
+    <div className="lg:flex lg:h-[calc(100dvh-100px)] lg:overflow-hidden lg:rounded-xl lg:border lg:bg-card">
       <aside
         className={cn(
           "min-h-0 flex-col lg:flex lg:w-[340px] lg:shrink-0 lg:border-r",
